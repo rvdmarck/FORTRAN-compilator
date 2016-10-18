@@ -1,0 +1,61 @@
+token: PROGRAM		lexical unit: PROGRAM
+token: factorielle	lexical unit: VARNAME
+token:                  lexical unit: ENDLINE
+token: INTEGER		lexical unit: INTEGER
+token: nombre		lexical unit: VARNAME
+token: ,		lexical unit: COMMA
+token: resultat		lexical unit: VARNAME
+token: ,		lexical unit: COMMA
+token: compteur		lexical unit: VARNAME
+token:                  lexical unit: ENDLINE
+token: READ*		lexical unit: READ
+token: ,		lexical unit: COMMA
+token: nombre		lexical unit: VARNAME
+token:                  lexical unit: ENDLINE
+token: resultat		lexical unit: VARNAME
+token: =		lexical unit: EQUAL
+token: 1		lexical unit: NUMBER
+token:                  lexical unit: ENDLINE
+token: IF		lexical unit: IF
+token: (		lexical unit: LEFT_PARENTHESIS
+token: nombre		lexical unit: VARNAME
+token: .GE.		lexical unit: GREATER_EQUAL
+token: 0		lexical unit: NUMBER
+token: )		lexical unit: RIGHT_PARENTHESIS
+token: THEN		lexical unit: THEN
+token:                  lexical unit: ENDLINE
+token: DO		lexical unit: DO
+token: compteur		lexical unit: VARNAME
+token: =		lexical unit: EQUAL
+token: 1		lexical unit: NUMBER
+token: ,		lexical unit: COMMA
+token: nombre		lexical unit: VARNAME
+token:                  lexical unit: ENDLINE
+token: resultat		lexical unit: VARNAME
+token: =		lexical unit: EQUAL
+token: resultat		lexical unit: VARNAME
+token: *		lexical unit: TIMES
+token: compteur		lexical unit: VARNAME
+token:                  lexical unit: ENDLINE
+token: ENDDO		lexical unit: ENDDO
+token: PRINT*		lexical unit: PRINT
+token: ,		lexical unit: COMMA
+token: resultat		lexical unit: VARNAME
+token:                  lexical unit: ENDLINE
+token: ELSE		lexical unit: ELSE
+token: PRINT*		lexical unit: PRINT
+token: ,		lexical unit: COMMA
+token: resultat		lexical unit: VARNAME
+token:                  lexical unit: ENDLINE
+token: ELSE		lexical unit: ELSE
+token: PRINT*		lexical unit: PRINT
+token: ,		lexical unit: COMMA
+token: -		lexical unit: MINUS
+token: 1		lexical unit: NUMBER
+token:                  lexical unit: ENDLINE
+token: ENDIF		lexical unit: ENDIF
+token: END		lexical unit: END
+Identifiers
+nombre		6
+resultat	6
+compteur	6
