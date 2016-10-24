@@ -82,6 +82,6 @@ print\* {return symbolBuilder(LexicalUnit.PRINT);}
 "+" {return symbolBuilder(LexicalUnit.PLUS);}
 "*" {return symbolBuilder(LexicalUnit.TIMES);}
 "/" {return symbolBuilder(LexicalUnit.DIVIDE);}
-{number} {return symbolBuilder(LexicalUnit.NUMBER, yytext());}
-{identifier} {addIdentifier(); return symbolBuilder(LexicalUnit.VARNAME, new Integer(yytext()));}
+{number} {return symbolBuilder(LexicalUnit.NUMBER, new Integer(yytext()));}
+{identifier} {addIdentifier(); return symbolBuilder(LexicalUnit.VARNAME, yytext());}
 . {System.out.println("TOKEN NOT RECOGNIZED: " + yytext());}
