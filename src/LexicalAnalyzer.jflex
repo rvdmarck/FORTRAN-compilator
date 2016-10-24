@@ -52,7 +52,7 @@ end_of_line = \r?\n
 whitespace = [ \t]
 %%
 
-^[cCdD\*].*\r?\n$ {}
+^[cCdD\*].*$ {}
 "!".*$ {}
 ^{whitespace}*\n$ {}
 {end_of_line} {System.out.println(symbolBuilder(LexicalUnit.ENDLINE));}
@@ -86,4 +86,5 @@ print\* {System.out.println(symbolBuilder(LexicalUnit.PRINT));}
 "/" {System.out.println(symbolBuilder(LexicalUnit.DIVIDE));}
 {number} {System.out.println(symbolBuilder(LexicalUnit.NUMBER, new Integer(yytext())));}
 {identifier} {System.out.println(symbolBuilder(LexicalUnit.VARNAME));}
+{whitespace} {}
 . {System.out.println("TOKEN NOT RECOGNIZED: " + yytext());}
