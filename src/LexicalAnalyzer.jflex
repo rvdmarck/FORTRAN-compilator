@@ -70,6 +70,7 @@ whitespace = [ \t]
 ^[cCdD\*].*$ {comment();}
 "!".*$ {comment();}
 ^{whitespace}*\n$ {}
+^{end_of_line} {}
 {end_of_line} {endOfLine();}//{System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.ENDLINE, " "));}
 integer {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.INTEGER));}
 program {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.PROGRAM));}
