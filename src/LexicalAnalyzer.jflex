@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashSet;
 
 %%
 
@@ -13,12 +14,16 @@ import java.util.ArrayList;
 
 %{
 private ArrayList<String> identifiers = new ArrayList<String>();
+private HashSet<String> idSet = new HashSet<String>();
 
 /**
 * Add an identifier and it's declaration location to the list of identifiers
 */
 private void addIdentifier(){
-  identifiers.add(yytext() + " " + (yyline+1));
+  if (!idSet.contains(yytext())) {
+    identifiers.add(yytext() + " " + (yyline+1));
+    idSet.add(yytext());
+  }
 }
 
 /**
@@ -46,6 +51,11 @@ private void log(Symbol s){
 
 %}
 
+%eof{
+  System.out.println("Identifiers");
+  identifiers.stream().sorted().forEach(System.out::println);
+%eof}
+
 /**
 * Patterns
 */
@@ -61,6 +71,7 @@ whitespace = [ \t]
   ^[cCdD\*!] {yybegin(PRECOMMENT);}
   program {log(symbolBuilder(LexicalUnit.PROGRAM));}
   {identifier} {log(symbolBuilder(LexicalUnit.VARNAME)); yybegin(PROGRAM);}
+  {end_of_line} {}
   . {}
 }
 
