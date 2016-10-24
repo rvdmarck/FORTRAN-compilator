@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 %{
 private ArrayList<String> identifiers = new ArrayList<String>();
+private boolean inComment = false;
 
 /**
 * Add an identifier and it's declaration location to the list of identifiers
@@ -39,6 +40,20 @@ private Symbol symbolBuilder(LexicalUnit unit, Object value){
     return new Symbol(unit, yyline, yycolumn, value);
 }
 
+/**
+*Handling of comments block
+*/
+private void comment(){
+  inComment = true;
+}
+
+private void endOfLine(){
+  if(!inComment){
+    System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.ENDLINE, " "));
+  }
+  inComment = false;
+}
+
 %}
 
 /**
@@ -52,10 +67,10 @@ end_of_line = \r?\n
 whitespace = [ \t]
 %%
 
-^[cCdD\*].*$ {}
-"!".*$ {}
+^[cCdD\*].*$ {comment();}
+"!".*$ {comment();}
 ^{whitespace}*\n$ {}
-{end_of_line} {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.ENDLINE, " "));}
+{end_of_line} {endOfLine();}//{System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.ENDLINE, " "));}
 integer {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.INTEGER));}
 program {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.PROGRAM));}
 end {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.END));}
