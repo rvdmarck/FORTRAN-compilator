@@ -55,36 +55,36 @@ whitespace = [ \t]
 ^[cCdD\*].*$ {}
 "!".*$ {}
 ^{whitespace}*\n$ {}
-{end_of_line} {System.out.println(symbolBuilder(LexicalUnit.ENDLINE));}
-integer {System.out.println(symbolBuilder(LexicalUnit.INTEGER));}
-program {System.out.println(symbolBuilder(LexicalUnit.PROGRAM));}
-end {System.out.println(symbolBuilder(LexicalUnit.END));}
-if {System.out.println(symbolBuilder(LexicalUnit.IF));}
-then {System.out.println(symbolBuilder(LexicalUnit.THEN));}
-endif {System.out.println(symbolBuilder(LexicalUnit.ENDIF));}
-else {System.out.println(symbolBuilder(LexicalUnit.ELSE));}
-do {System.out.println(symbolBuilder(LexicalUnit.DO));}
-enddo {System.out.println(symbolBuilder(LexicalUnit.ENDDO));}
-read\* {System.out.println(symbolBuilder(LexicalUnit.READ));}
-print\* {System.out.println(symbolBuilder(LexicalUnit.PRINT));}
-\.not\. {System.out.println(symbolBuilder(LexicalUnit.NOT));}
-\.an\. {System.out.println(symbolBuilder(LexicalUnit.AND));}
-\.or\. {System.out.println(symbolBuilder(LexicalUnit.OR));}
-\.eq\. {System.out.println(symbolBuilder(LexicalUnit.EQUAL_COMPARE));}
-\.ge\. {System.out.println(symbolBuilder(LexicalUnit.GREATER_EQUAL));}
-\.gt\. {System.out.println(symbolBuilder(LexicalUnit.GREATER));}
-\.le\. {System.out.println(symbolBuilder(LexicalUnit.SMALLER_EQUAL));}
-\.lt\. {System.out.println(symbolBuilder(LexicalUnit.SMALLER));}
-\.ne\. {System.out.println(symbolBuilder(LexicalUnit.DIFFERENT));}
-"," {System.out.println(symbolBuilder(LexicalUnit.COMMA));}
-"=" {System.out.println(symbolBuilder(LexicalUnit.EQUAL));}
-"(" {System.out.println(symbolBuilder(LexicalUnit.LEFT_PARENTHESIS));}
-")" {System.out.println(symbolBuilder(LexicalUnit.RIGHT_PARENTHESIS));}
-"-" {System.out.println(symbolBuilder(LexicalUnit.MINUS));}
-"+" {System.out.println(symbolBuilder(LexicalUnit.PLUS));}
-"*" {System.out.println(symbolBuilder(LexicalUnit.TIMES));}
-"/" {System.out.println(symbolBuilder(LexicalUnit.DIVIDE));}
-{number} {System.out.println(symbolBuilder(LexicalUnit.NUMBER, new Integer(yytext())));}
-{identifier} {System.out.println(symbolBuilder(LexicalUnit.VARNAME));}
+{end_of_line} {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.ENDLINE, " "));}
+integer {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.INTEGER));}
+program {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.PROGRAM));}
+end {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.END));}
+if {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.IF));}
+then {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.THEN));}
+endif {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.ENDIF));}
+else {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.ELSE));}
+do {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.DO));}
+enddo {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.ENDDO));}
+read\* {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.READ));}
+print\* {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.PRINT));}
+\.not\. {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.NOT));}
+\.an\. {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.AND));}
+\.or\. {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.OR));}
+\.eq\. {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.EQUAL_COMPARE));}
+\.ge\. {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.GREATER_EQUAL));}
+\.gt\. {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.GREATER));}
+\.le\. {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.SMALLER_EQUAL));}
+\.lt\. {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.SMALLER));}
+\.ne\. {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.DIFFERENT));}
+"," {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.COMMA));}
+"=" {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.EQUAL));}
+"(" {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.LEFT_PARENTHESIS));}
+")" {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.RIGHT_PARENTHESIS));}
+"-" {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.MINUS));}
+"+" {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.PLUS));}
+"*" {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.TIMES));}
+"/" {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.DIVIDE));}
+{number} {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.NUMBER, new Integer(yytext())));}
+{identifier} {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.VARNAME));}
 {whitespace} {}
 . {System.out.println("TOKEN NOT RECOGNIZED: " + yytext());}
