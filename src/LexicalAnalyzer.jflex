@@ -42,12 +42,18 @@ private Symbol symbolBuilder(LexicalUnit unit, Object value){
 }
 
 /**
-*Handling of comments block
+* Informs a comment line is encountered
+* @return void
 */
 private void comment(){
   inComment = true;
 }
 
+/**
+* Handles what to do in case of a
+* end_of_line match.
+* @return void
+*/
 private void endOfLine(){
   if(!inComment && !inEndStatement){
     System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.ENDLINE, " "));
@@ -55,6 +61,10 @@ private void endOfLine(){
   inComment = false;
 }
 
+/**
+* Informs a END statement is encountered
+* @return void
+*/
 private void endStatement(){
   System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.END));
   inEndStatement = true;
@@ -80,7 +90,7 @@ whitespace = [ \t]
 {end_of_line} {endOfLine();}
 integer {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.INTEGER));}
 program {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.PROGRAM));}
-end {endStatement();}//{System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.END));}
+end {endStatement();}
 if {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.IF));}
 then {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.THEN));}
 endif {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.ENDIF));}
