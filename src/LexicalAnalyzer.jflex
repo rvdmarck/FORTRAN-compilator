@@ -70,6 +70,10 @@ private void endStatement(){
   inEndStatement = true;
 }
 
+private void log(Symbol s){
+  System.out.println("line: "+ (yyline+1) + " " + s);
+}
+
 %}
 
 /**
@@ -88,35 +92,35 @@ whitespace = [ \t]
 ^{whitespace}*\n$ {}
 ^{whitespace}*{end_of_line} {}
 {end_of_line} {endOfLine();}
-integer {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.INTEGER));}
-program {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.PROGRAM));}
+integer {log(symbolBuilder(LexicalUnit.INTEGER));}
+program {log(symbolBuilder(LexicalUnit.PROGRAM));}
 end {endStatement();}
-if {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.IF));}
-then {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.THEN));}
-endif {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.ENDIF));}
-else {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.ELSE));}
-do {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.DO));}
-enddo {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.ENDDO));}
-read\* {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.READ));}
-print\* {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.PRINT));}
-\.not\. {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.NOT));}
-\.an\. {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.AND));}
-\.or\. {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.OR));}
-\.eq\. {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.EQUAL_COMPARE));}
-\.ge\. {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.GREATER_EQUAL));}
-\.gt\. {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.GREATER));}
-\.le\. {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.SMALLER_EQUAL));}
-\.lt\. {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.SMALLER));}
-\.ne\. {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.DIFFERENT));}
-"," {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.COMMA));}
-"=" {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.EQUAL));}
-"(" {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.LEFT_PARENTHESIS));}
-")" {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.RIGHT_PARENTHESIS));}
-"-" {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.MINUS));}
-"+" {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.PLUS));}
-"*" {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.TIMES));}
-"/" {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.DIVIDE));}
-{number} {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.NUMBER, new Integer(yytext())));}
-{identifier} {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.VARNAME));}
+if {log(symbolBuilder(LexicalUnit.IF));}
+then {log(symbolBuilder(LexicalUnit.THEN));}
+endif {log(symbolBuilder(LexicalUnit.ENDIF));}
+else {log(symbolBuilder(LexicalUnit.ELSE));}
+do {log(symbolBuilder(LexicalUnit.DO));}
+enddo {log(symbolBuilder(LexicalUnit.ENDDO));}
+read\* {log(symbolBuilder(LexicalUnit.READ));}
+print\* {log(symbolBuilder(LexicalUnit.PRINT));}
+\.not\. {log(symbolBuilder(LexicalUnit.NOT));}
+\.an\. {log(symbolBuilder(LexicalUnit.AND));}
+\.or\. {log(symbolBuilder(LexicalUnit.OR));}
+\.eq\. {log(symbolBuilder(LexicalUnit.EQUAL_COMPARE));}
+\.ge\. {log(symbolBuilder(LexicalUnit.GREATER_EQUAL));}
+\.gt\. {log(symbolBuilder(LexicalUnit.GREATER));}
+\.le\. {log(symbolBuilder(LexicalUnit.SMALLER_EQUAL));}
+\.lt\. {log(symbolBuilder(LexicalUnit.SMALLER));}
+\.ne\. {log(symbolBuilder(LexicalUnit.DIFFERENT));}
+"," {log(symbolBuilder(LexicalUnit.COMMA));}
+"=" {log(symbolBuilder(LexicalUnit.EQUAL));}
+"(" {log(symbolBuilder(LexicalUnit.LEFT_PARENTHESIS));}
+")" {log(symbolBuilder(LexicalUnit.RIGHT_PARENTHESIS));}
+"-" {log(symbolBuilder(LexicalUnit.MINUS));}
+"+" {log(symbolBuilder(LexicalUnit.PLUS));}
+"*" {log(symbolBuilder(LexicalUnit.TIMES));}
+"/" {log(symbolBuilder(LexicalUnit.DIVIDE));}
+{number} {log(symbolBuilder(LexicalUnit.NUMBER, new Integer(yytext())));}
+{identifier} {log(symbolBuilder(LexicalUnit.VARNAME));}
 {whitespace} {}
 . {System.out.println("TOKEN NOT RECOGNIZED: " + yytext());}
