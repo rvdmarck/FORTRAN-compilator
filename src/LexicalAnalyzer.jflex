@@ -74,7 +74,7 @@ whitespace = [ \t]
 {end_of_line} {endOfLine();}
 integer {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.INTEGER));}
 program {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.PROGRAM));}
-end {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.END));}
+end {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.END));System.exit(0);}
 if {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.IF));}
 then {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.THEN));}
 endif {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.ENDIF));}
