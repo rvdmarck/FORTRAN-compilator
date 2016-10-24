@@ -13,6 +13,7 @@ import java.util.ArrayList;
 %{
 private ArrayList<String> identifiers = new ArrayList<String>();
 private boolean inComment = false;
+private boolean inEndStatement = false;
 
 /**
 * Add an identifier and it's declaration location to the list of identifiers
@@ -48,10 +49,15 @@ private void comment(){
 }
 
 private void endOfLine(){
-  if(!inComment){
+  if(!inComment && !inEndStatement){
     System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.ENDLINE, " "));
   }
   inComment = false;
+}
+
+private void endStatement(){
+  System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.END));
+  inEndStatement = true;
 }
 
 %}
@@ -74,7 +80,7 @@ whitespace = [ \t]
 {end_of_line} {endOfLine();}
 integer {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.INTEGER));}
 program {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.PROGRAM));}
-end {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.END));System.exit(0);}
+end {endStatement();}//{System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.END));}
 if {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.IF));}
 then {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.THEN));}
 endif {System.out.println("line: " + (yyline+1) + " " + symbolBuilder(LexicalUnit.ENDIF));}
