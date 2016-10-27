@@ -29,5 +29,5 @@ public enum LexicalUnit{
     ENDDO,
     PRINT,
     READ,
-    ENDLINE,
+    ENDLINE
 }

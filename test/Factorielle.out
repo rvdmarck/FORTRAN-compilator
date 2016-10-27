@@ -38,24 +38,22 @@ token: *		lexical unit: TIMES
 token: compteur		lexical unit: VARNAME
 token:                  lexical unit: ENDLINE
 token: ENDDO		lexical unit: ENDDO
+token:                  lexical unit: ENDLINE
 token: PRINT*		lexical unit: PRINT
 token: ,		lexical unit: COMMA
 token: resultat		lexical unit: VARNAME
 token:                  lexical unit: ENDLINE
 token: ELSE		lexical unit: ELSE
-token: PRINT*		lexical unit: PRINT
-token: ,		lexical unit: COMMA
-token: resultat		lexical unit: VARNAME
 token:                  lexical unit: ENDLINE
-token: ELSE		lexical unit: ELSE
 token: PRINT*		lexical unit: PRINT
 token: ,		lexical unit: COMMA
 token: -		lexical unit: MINUS
 token: 1		lexical unit: NUMBER
 token:                  lexical unit: ENDLINE
 token: ENDIF		lexical unit: ENDIF
+token:                  lexical unit: ENDLINE
 token: END		lexical unit: END
 Identifiers
+compteur	6
 nombre		6
 resultat	6
-compteur	6
