@@ -44,7 +44,7 @@ private Symbol symbolBuilder(LexicalUnit unit, Object value){
 }
 
 private void log(Symbol s){
-  System.out.println("line: "+ (yyline+1) + " " + s);
+  System.out.println(s);
 }
 
 %}
