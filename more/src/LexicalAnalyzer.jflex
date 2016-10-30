@@ -1,5 +1,5 @@
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Map;
+import java.util.TreeMap;
 
 %%
 
@@ -13,16 +13,14 @@ import java.util.HashSet;
 %s PROGRAM, COMMENT, PRECOMMENT
 
 %{
-private ArrayList<String> identifiers = new ArrayList<String>();
-private HashSet<String> idSet = new HashSet<String>();
+private TreeMap<String, Integer> identifiers = new TreeMap<String, Integer>();
 
 /**
 * Add an identifier and it's declaration location to the list of identifiers
 */
 private void addIdentifier(){
-  if (!idSet.contains(yytext())) {
-    identifiers.add(yytext() + " " + (yyline+1));
-    idSet.add(yytext());
+  if (!identifiers.containsKey(yytext())) {
+    identifiers.put(yytext(), yyline+1);
   }
 }
 
@@ -53,7 +51,9 @@ private void log(Symbol s){
 
 %eof{
   System.out.println("Identifiers");
-  identifiers.stream().sorted().forEach(System.out::println);
+  for (Map.Entry<String, Integer> i: identifiers.entrySet()){
+    System.out.println(i.getKey() + " " + i.getValue());
+  }
 %eof}
 
 /**
