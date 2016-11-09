@@ -8,6 +8,7 @@ import java.util.TreeMap;
 %column
 %unicode
 %ignorecase
+%type Symbol
 
 %s PROGRAM, COMMENT, PRECOMMENT
 
