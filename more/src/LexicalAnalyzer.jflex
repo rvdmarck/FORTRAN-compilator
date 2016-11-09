@@ -66,17 +66,17 @@ whitespace = [ \t]
 <YYINITIAL> {
   ^[cCdD\*!] {yybegin(PRECOMMENT);}
   program {return symbolBuilder(LexicalUnit.PROGRAM);}
-  {identifier} {return symbolBuilder(LexicalUnit.VARNAME); yybegin(PROGRAM);}
+  {identifier} {yybegin(PROGRAM); return symbolBuilder(LexicalUnit.VARNAME);}
   {end_of_line} {}
   . {}
 }
 
 <PROGRAM> {
   ^[cCdD\*!] {yybegin(COMMENT);}
-  "!" {return symbolBuilder(LexicalUnit.ENDLINE, " "); yybegin(COMMENT);}
+  "!" {yybegin(COMMENT); return symbolBuilder(LexicalUnit.ENDLINE, " ");}
   ^{whitespace}*{end_of_line} {}
   {end_of_line} {return symbolBuilder(LexicalUnit.ENDLINE, " ");}
-  end {return symbolBuilder(LexicalUnit.END); yybegin(YYINITIAL);}
+  end {yybegin(YYINITIAL); return symbolBuilder(LexicalUnit.END);}
   integer {return symbolBuilder(LexicalUnit.INTEGER);}
   if {return symbolBuilder(LexicalUnit.IF);}
   then {return symbolBuilder(LexicalUnit.THEN);}

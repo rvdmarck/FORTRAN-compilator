@@ -801,7 +801,7 @@ private Symbol symbolBuilder(LexicalUnit unit, Object value){
             }
           case 40: break;
           case 2: 
-            { return symbolBuilder(LexicalUnit.VARNAME); yybegin(PROGRAM);
+            { yybegin(PROGRAM); return symbolBuilder(LexicalUnit.VARNAME);
             }
           case 41: break;
           case 3: 
@@ -829,7 +829,7 @@ private Symbol symbolBuilder(LexicalUnit unit, Object value){
             }
           case 47: break;
           case 9: 
-            { return symbolBuilder(LexicalUnit.ENDLINE, " "); yybegin(COMMENT);
+            { yybegin(COMMENT); return symbolBuilder(LexicalUnit.ENDLINE, " ");
             }
           case 48: break;
           case 10: 
@@ -881,7 +881,7 @@ private Symbol symbolBuilder(LexicalUnit unit, Object value){
             }
           case 60: break;
           case 22: 
-            { return symbolBuilder(LexicalUnit.END); yybegin(YYINITIAL);
+            { yybegin(YYINITIAL); return symbolBuilder(LexicalUnit.END);
             }
           case 61: break;
           case 23: 
