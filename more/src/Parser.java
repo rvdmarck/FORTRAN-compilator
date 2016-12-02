@@ -154,7 +154,7 @@ public class Parser {
             System.out.println("x1");
             mulOp();
             exprArithC();
-            x()
+            x();
         } else {
             System.out.println("x2");
         }

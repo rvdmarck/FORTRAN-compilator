@@ -7,6 +7,6 @@ public class ParserException extends Exception {
     }
 
     public ParserException(Symbol s){
-        super("Unexpected token: " + s.getType() + " (line " + s.getLine() + ", col " + s.getColumn() + ")");
+        super("Unexpected token: " + s.getValue() + " (line " + s.getLine() + ", col " + s.getColumn() + ")");
     }
 }
