@@ -51,15 +51,20 @@ public class Parser {
             System.out.println("vars1");
             varlist();
             match(LexicalUnit.ENDLINE);
-        } else {
+        } else if(matchAny(LexicalUnit.ENDLINE, LexicalUnit.VARNAME, LexicalUnit.DO, LexicalUnit.READ, LexicalUnit.IF, LexicalUnit.PRINT)){
             System.out.println("vars2");
+        }else{
+            System.out.println("vars3");
         }
     }
 
     private void varlist(){
-        System.out.println("varlist");
-        match(LexicalUnit.VARNAME);
-        followVarlist();
+        if(match(LexicalUnit.VARNAME)){
+            System.out.println("varlist");
+            followVarlist();
+        }else if(matchAny(LexicalUnit.ENDLINE)){
+            System.out.println("varlist2");
+        }
     }
 
     private void followVarlist(){
