@@ -59,20 +59,19 @@ public class Parser {
     }
 
     private void varlist(){
-        if(match(LexicalUnit.VARNAME)){
-            System.out.println("varlist");
-            followVarlist();
-        }else if(matchAny(LexicalUnit.ENDLINE)){
-            System.out.println("varlist2");
-        }
+        System.out.println("varlist");
+        match(LexicalUnit.VARNAME);
+        followVarlist();
     }
 
     private void followVarlist(){
         if (match(LexicalUnit.COMMA)){
             System.out.println("followvarlist1");
             varlist();
-        } else {
+        } else if(matchAny(LexicalUnit.ENDLINE)){
             System.out.println("followvarlist2");
+        } else{
+            System.out.println("followvarlist3")
         }
     }
 
@@ -82,8 +81,10 @@ public class Parser {
             instruction();
             match(LexicalUnit.ENDLINE);
             code();
-        } else {
+        } else if(matchAny(LexicalUnit.ENDDO, LexicalUnit.NOT, LexicalUnit.VARNAME, LexicalUnit.NUMBER, LexicalUnit.LEFT_PARENTHESIS, LexicalUnit.MINUS, LexicalUnit.ELSE, LexicalUnit.END, LexicalUnit.ENDIF)){
             System.out.println("code2");
+        } else{
+            System.out.println("code3");
         }
     }
 
@@ -138,8 +139,10 @@ public class Parser {
             addOp();
             exprArithB();
             v();
-        } else {
+        } else if(matchAny(LexicalUnit.COMMA, LexicalUnit.EQUAL, LexicalUnit.GREATER_EQUAL, LexicalUnit.GREATER, LexicalUnit.SMALLER_EQUAL, LexicalUnit.DIFFERENT, LexicalUnit.RIGHT_PARENTHESIS, LexicalUnit.TIMES, LexicalUnit.DIVIDE, LexicalUnit.ENDLINE, LexicalUnit.AND, LexicalUnit.OR, LexicalUnit.PLUS, LexicalUnit.MINUS)){
             System.out.println("v2");
+        } else{
+            System.out.println("v3");
         }
     }
 
@@ -160,8 +163,10 @@ public class Parser {
             mulOp();
             exprArithC();
             x()
-        } else {
+        } else if(matchAny(LexicalUnit.COMMA, LexicalUnit.EQUAL, LexicalUnit.GREATER_EQUAL, LexicalUnit.GREATER, LexicalUnit.SMALLER_EQUAL, LexicalUnit.DIFFERENT, LexicalUnit.RIGHT_PARENTHESIS, LexicalUnit.TIMES, LexicalUnit.DIVIDE, LexicalUnit.ENDLINE, LexicalUnit.AND, LexicalUnit.OR, LexicalUnit.PLUS, LexicalUnit.MINUS)){
             System.out.println("x2");
+        } else{
+            System.out.println("x3");
         }
     }
 
@@ -212,8 +217,10 @@ public class Parser {
             System.out.println("elserule1");
             match(LexicalUnit.ENDLINE);
             code();
-        } else {
+        } else if(matchAny(LexicalUnit.ENDIF)){
             System.out.println("elserule2");
+        } else{
+            System.out.println("elserule3");
         }
     }
 
@@ -233,8 +240,10 @@ public class Parser {
             System.out.println("b1");
             condB();
             b();
-        } else {
+        } else if(matchAny(LexicalUnit.RIGHT_PARENTHESIS)){
             System.out.println("b2");
+        } else{
+            System.out.println("b3");
         }
     }
 
@@ -253,8 +262,10 @@ public class Parser {
         if (match(LexicalUnit.AND)){
             System.out.println("d1");
             condC();
-        } else {
+        } else if(matchAny(LexicalUnit.OR; LexicalUnit.RIGHT_PARENTHESIS)){
             System.out.println("d2");
+        } else{
+            System.out.println("d3");
         }
     }
 
@@ -332,8 +343,10 @@ public class Parser {
         if (match(LexicalUnit.COMMA)){
             System.out.println("followExplist1");
             expList();
-        } else {
+        } else if(matchAny(LexicalUnit.ENDLINE)){
             System.out.println("followExpList2");
+        } else{
+            System.out.println("followExpList3");
         }
     }
 }
