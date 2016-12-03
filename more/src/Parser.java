@@ -8,11 +8,11 @@ public class Parser {
     private LexicalAnalyzer la;
     private Symbol peeked = null;
 
-    public Parser(LexicalAnalyzer la){
+    Parser(LexicalAnalyzer la){
         this.la = la;
     }
 
-    public void run() throws ParserException {
+    void run() throws ParserException {
         peek();
         program();
     }
@@ -137,13 +137,8 @@ public class Parser {
 
     private void exprArithA() throws ParserException{
         System.out.println("exprArithA");
-        u();
-        v();
-    }
-
-    private void u() throws ParserException{
-        System.out.println("u");
         exprArithB();
+        v();
     }
 
     private void v() throws ParserException{
@@ -161,13 +156,8 @@ public class Parser {
 
     private void exprArithB() throws ParserException{
         System.out.println("exprArithB");
-        w();
-        x();
-    }
-
-    private void w() throws ParserException{
-        System.out.println("w");
         exprArithC();
+        x();
     }
 
     private void x() throws ParserException{
@@ -245,13 +235,8 @@ public class Parser {
 
     private void condA() throws ParserException{
         System.out.println("condA");
-        a();
-        b();
-    }
-
-    private void a() throws ParserException{
-        System.out.println("a");
         condB();
+        b();
     }
 
     private void b() throws ParserException{
@@ -268,13 +253,8 @@ public class Parser {
 
     private void condB() throws ParserException{
         System.out.println("condB");
-        c();
-        d();
-    }
-
-    private void c() throws ParserException{
-        System.out.println("c");
         condC();
+        d();
     }
 
     private void d() throws ParserException{
