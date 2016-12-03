@@ -16,7 +16,6 @@ class Parser {
     private void peek() {
         try {
             peeked = la.yylex();
-            System.out.println(peeked);
         } catch (IOException e) {
             throw new RuntimeException("An IO error occurred");
         }
