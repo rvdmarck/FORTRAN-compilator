@@ -49,8 +49,14 @@ public class Parser {
             return true;
     }
 
+    private void printRule(int n, String left, String right){
+        String nStr = "[" + n + "]";
+        left = "<" + left + ">";
+        System.out.println(String.format("%-5s %-15s \u2192 %s", nStr, left, right));
+    }
+
     private void program() throws ParserException{
-        System.out.println("program");
+        printRule(1, "Program", "PROGRAM [ProgName] [EndLine] <Vars> <Code> END");
         matchOrThrow(LexicalUnit.PROGRAM);
         matchOrThrow(LexicalUnit.VARNAME);
         matchOrThrow(LexicalUnit.ENDLINE);
@@ -61,28 +67,28 @@ public class Parser {
 
     private void vars() throws ParserException{
         if (match(LexicalUnit.INTEGER)){
-            System.out.println("vars1");
+            printRule(2, "Vars", "INTEGER <VarList> [EndLine]");
             varlist();
             matchOrThrow(LexicalUnit.ENDLINE);
         } else if(matchAny(LexicalUnit.ENDLINE, LexicalUnit.VARNAME, LexicalUnit.DO, LexicalUnit.READ, LexicalUnit.IF, LexicalUnit.PRINT)){
-            System.out.println("vars2");
+            printRule(3, "Vars", "\u0395");
         }else{
             throw new ParserException(peeked);
         }
     }
 
     private void varlist() throws ParserException{
-        System.out.println("varlist");
+        printRule(4, "VarList", "[VarName] <FollowVarList>");
         matchOrThrow(LexicalUnit.VARNAME);
         followVarlist();
     }
 
     private void followVarlist() throws ParserException{
         if (match(LexicalUnit.COMMA)){
-            System.out.println("followvarlist1");
+            printRule(5, "FollowVarList", ", <VarList>");
             varlist();
         } else if(matchAny(LexicalUnit.ENDLINE)){
-            System.out.println("followvarlist2");
+            printRule(5, "FollowVarList", "\u0395");
         } else{
             throw new ParserException(peeked);
         }
@@ -90,12 +96,12 @@ public class Parser {
 
     private void code() throws ParserException{
         if (matchAny(LexicalUnit.VARNAME, LexicalUnit.DO, LexicalUnit.READ, LexicalUnit.IF, LexicalUnit.PRINT)){
-            System.out.println("code1");
+            printRule(7, "Code", "<Instruction> [EndLine] <Code>");
             instruction();
             matchOrThrow(LexicalUnit.ENDLINE);
             code();
         } else if(matchAny(LexicalUnit.ENDDO, LexicalUnit.NOT, LexicalUnit.VARNAME, LexicalUnit.NUMBER, LexicalUnit.LEFT_PARENTHESIS, LexicalUnit.MINUS, LexicalUnit.ELSE, LexicalUnit.END, LexicalUnit.ENDIF)){
-            System.out.println("code2");
+            printRule(8, "Code", "\u0395");
         } else{
             throw new ParserException(peeked);
         }
@@ -104,23 +110,23 @@ public class Parser {
     private void instruction() throws ParserException{
         switch (peeked.getType()){
             case VARNAME:
-                System.out.println("instruction1");
+                printRule(9, "Instruction", "<Assign>");;
                 assign();
                 break;
             case IF:
-                System.out.println("instruction2");
+                printRule(10, "Instruction", "<If>");
                 ifrule();
                 break;
             case DO:
-                System.out.println("instruction3");
+                printRule(11, "Instruction", "<Do>");
                 doRule();
                 break;
             case PRINT:
-                System.out.println("instruction4");
+                printRule(12, "Instruction", "<Print>");
                 print();
                 break;
             case READ:
-                System.out.println("instruction5");
+                printRule(13, "Instruction", "<Read>");
                 read();
                 break;
             default:
@@ -129,45 +135,45 @@ public class Parser {
     }
 
     private void assign() throws ParserException{
-        System.out.println("assign");
+        printRule(14, "Assign", "[VarName] = <ExprArithA>");
         matchOrThrow(LexicalUnit.VARNAME);
         matchOrThrow(LexicalUnit.EQUAL);
         exprArithA();
     }
 
     private void exprArithA() throws ParserException{
-        System.out.println("exprArithA");
+        printRule(15, "ExprArithA", "<ExprArithB> <V>");
         exprArithB();
         v();
     }
 
     private void v() throws ParserException{
         if (matchAny(LexicalUnit.PLUS, LexicalUnit.MINUS)) {
-            System.out.println("v1");
+            printRule(16, "V", "<AddOp> <ExprArithB> <V>");
             addOp();
             exprArithB();
             v();
         } else if(matchAny(LexicalUnit.COMMA, LexicalUnit.EQUAL, LexicalUnit.GREATER_EQUAL, LexicalUnit.GREATER, LexicalUnit.SMALLER_EQUAL, LexicalUnit.DIFFERENT, LexicalUnit.RIGHT_PARENTHESIS, LexicalUnit.TIMES, LexicalUnit.DIVIDE, LexicalUnit.ENDLINE, LexicalUnit.AND, LexicalUnit.OR, LexicalUnit.PLUS, LexicalUnit.MINUS)){
-            System.out.println("v2");
+            printRule(17, "V", "\u0395");
         } else{
             throw new ParserException(peeked);
         }
     }
 
     private void exprArithB() throws ParserException{
-        System.out.println("exprArithB");
+        printRule(18, "ExprArithB", "<ExprArithC> <X>");
         exprArithC();
         x();
     }
 
     private void x() throws ParserException{
         if (matchAny(LexicalUnit.TIMES, LexicalUnit.DIVIDE)){
-            System.out.println("x1");
+            printRule(19, "X", "<MulOp> <ExprArithC> <X>");
             mulOp();
             exprArithC();
             x();
         } else if(matchAny(LexicalUnit.COMMA, LexicalUnit.EQUAL, LexicalUnit.GREATER_EQUAL, LexicalUnit.GREATER, LexicalUnit.SMALLER_EQUAL, LexicalUnit.DIFFERENT, LexicalUnit.RIGHT_PARENTHESIS, LexicalUnit.TIMES, LexicalUnit.DIVIDE, LexicalUnit.ENDLINE, LexicalUnit.AND, LexicalUnit.OR, LexicalUnit.PLUS, LexicalUnit.MINUS)){
-            System.out.println("x2");
+            printRule(20, "X", "\u0395");
         } else{
             throw new ParserException(peeked);
         }
@@ -175,15 +181,15 @@ public class Parser {
 
     private void exprArithC() throws ParserException{
         if (match(LexicalUnit.VARNAME)){
-            System.out.println("exprAritC1");
+            printRule(21, "ExprArithC", "[VarName]");
         } else if (match(LexicalUnit.NUMBER)){
-            System.out.println("exprAritC2");
+            printRule(22, "ExprArithC", "[Number]");
         } else if (match(LexicalUnit.LEFT_PARENTHESIS)){
-            System.out.println("exprArithC3");
+            printRule(23, "ExprArithC", "( <ExprArithA> )");
             exprArithA();
             matchOrThrow(LexicalUnit.RIGHT_PARENTHESIS);
         } else if (match(LexicalUnit.MINUS)){
-            System.out.println("exprArithC4");
+            printRule(24, "ExprArithC", "- <ExprArithA>");
             exprArithA();
         } else {
             throw new ParserException(peeked);
@@ -192,9 +198,9 @@ public class Parser {
 
     private void addOp() throws ParserException{
         if (match(LexicalUnit.PLUS)){
-            System.out.println("addop1");
+            printRule(25, "AddOp", "+");
         } else if (match(LexicalUnit.MINUS)){
-            System.out.println("addop2");
+            printRule(26, "AddOp", "-");
         } else {
             throw new ParserException(peeked);
         }
@@ -202,16 +208,16 @@ public class Parser {
 
     private void mulOp() throws ParserException{
         if (match(LexicalUnit.TIMES)){
-            System.out.println("mulop1");
+            printRule(27, "MulOp", "*");
         } else if (match(LexicalUnit.DIVIDE)){
-            System.out.println("mulop2");
+            printRule(28, "MulOp", "/");
         } else {
             throw new ParserException(peeked);
         }
     }
 
     private void ifrule() throws ParserException{
-        System.out.println("if");
+        printRule(29, "If", "IF ( <CondA> ) THEN [EndLine] <Code> <Else> ENDIF");
         matchOrThrow(LexicalUnit.IF);
         condA();
         matchOrThrow(LexicalUnit.THEN);
@@ -223,58 +229,62 @@ public class Parser {
 
     private void elserule() throws ParserException{
         if (match(LexicalUnit.ELSE)){
-            System.out.println("elserule1");
+            printRule(30, "Else", "ELSE [EndLine] <Code>");
             matchOrThrow(LexicalUnit.ENDLINE);
             code();
         } else if(matchAny(LexicalUnit.ENDIF)){
-            System.out.println("elserule2");
+            printRule(31, "Else", "\u0395");
         } else{
             throw new ParserException(peeked);
         }
     }
 
     private void condA() throws ParserException{
-        System.out.println("condA");
+        printRule(32, "CondA", "<CondB> <B>");
         condB();
         b();
     }
 
     private void b() throws ParserException{
         if (match(LexicalUnit.OR)){
-            System.out.println("b1");
+            printRule(33, "B", ".OR. <CondB> <B>");
             condB();
             b();
         } else if(matchAny(LexicalUnit.RIGHT_PARENTHESIS)){
-            System.out.println("b2");
+            printRule(34, "B", "\u0395");
         } else{
             throw new ParserException(peeked);
         }
     }
 
     private void condB() throws ParserException{
-        System.out.println("condB");
+        printRule(35, "CondB", "<CondC> <D>");
         condC();
         d();
     }
 
     private void d() throws ParserException{
         if (match(LexicalUnit.AND)){
-            System.out.println("d1");
+            printRule(36, "D", ".AND. <CondC>");
             condC();
         } else if(matchAny(LexicalUnit.OR, LexicalUnit.RIGHT_PARENTHESIS)){
-            System.out.println("d2");
+            printRule(37, "D", "\u0395");
         } else{
             throw new ParserException(peeked);
         }
     }
 
     private void condC() throws ParserException{
-        System.out.println(match(LexicalUnit.NOT) ? "condC1" : "condC2");
+        if (match(LexicalUnit.NOT)){
+            printRule(38, "CondC", ".NOT. <SimpleCond>");
+        } else {
+            printRule(39, "CondC", "<SimpleCond>");
+        }
         simpleCond();
     }
 
     private void simpleCond() throws ParserException{
-        System.out.println("simpleCond");
+        printRule(40, "SimpleCond", "<ExprArithA> <Comp> <ExprArithA>");
         exprArithA();
         comp();
         exprArithA();
@@ -283,22 +293,22 @@ public class Parser {
     private void comp() throws ParserException{
         switch (peeked.getType()){
             case EQUAL_COMPARE:
-                System.out.println("comp1");
+                printRule(41, "Comp", ".EQ.");
                 break;
             case GREATER_EQUAL:
-                System.out.println("comp2");
+                printRule(42, "Comp", ".GE.");
                 break;
             case GREATER:
-                System.out.println("comp3");
+                printRule(43, "Comp", ".GT.");
                 break;
             case SMALLER_EQUAL:
-                System.out.println("comp4");
+                printRule(44, "Comp", ".LE.");
                 break;
             case SMALLER:
-                System.out.println("comp5");
+                printRule(45, "Comp", ".LT.");
                 break;
             case DIFFERENT:
-                System.out.println("comp6");
+                printRule(46, "Comp", ".NE.");
                 break;
             default:
                 throw new ParserException(peeked);
@@ -306,7 +316,7 @@ public class Parser {
     }
 
     private void doRule() throws ParserException{
-        System.out.println("dorule");
+        printRule(47, "Do", "DO [VarName] = [Number] , [Number] [EndLine] <Code> ENDDO");
         matchOrThrow(LexicalUnit.DO);
         matchOrThrow(LexicalUnit.VARNAME);
         matchOrThrow(LexicalUnit.EQUAL);
@@ -319,31 +329,31 @@ public class Parser {
     }
 
     private void print() throws ParserException{
-        System.out.println("print");
+        printRule(48, "Print", "PRINT* , <ExpList>");
         matchOrThrow(LexicalUnit.PRINT);
         matchOrThrow(LexicalUnit.COMMA);
         expList();
     }
 
     private void read() throws ParserException{
-        System.out.println("read");
+        printRule(49, "Read", "READ* , <VarList>");
         matchOrThrow(LexicalUnit.READ);
         matchOrThrow(LexicalUnit.COMMA);
         varlist();
     }
 
     private void expList() throws ParserException{
-        System.out.println("explist");
+        printRule(50, "ExpList", "<ExprArithA> <FollowExpList>");
         exprArithA();
         followExplist();
     }
 
     private void followExplist() throws ParserException{
         if (match(LexicalUnit.COMMA)){
-            System.out.println("followExplist1");
+            printRule(51, "FollowExpList", ", <ExpList>");
             expList();
         } else if(matchAny(LexicalUnit.ENDLINE)){
-            System.out.println("followExpList2");
+            printRule(52, "FollowExpList", "\u0395");
         } else{
             throw new ParserException(peeked);
         }

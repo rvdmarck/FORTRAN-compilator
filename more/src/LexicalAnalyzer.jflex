@@ -1,6 +1,3 @@
-import java.util.Map;
-import java.util.TreeMap;
-
 %%
 
 %class LexicalAnalyzer
@@ -13,17 +10,6 @@ import java.util.TreeMap;
 %s PROGRAM, COMMENT, PRECOMMENT
 
 %{
-private TreeMap<String, Integer> identifiers = new TreeMap<String, Integer>();
-
-/**
-* Add an identifier and it's declaration location to the list of identifiers
-*/
-private void addIdentifier(){
-  if (!identifiers.containsKey(yytext())) {
-    identifiers.put(yytext(), yyline+1);
-  }
-}
-
 /**
 * Helper function too create new symbol with position
 * @param type of LexicalUnit inferred
@@ -44,13 +30,6 @@ private Symbol symbolBuilder(LexicalUnit unit, Object value){
 }
 
 %}
-
-%eof{
-  System.out.println("Identifiers");
-  for (Map.Entry<String, Integer> i: identifiers.entrySet()){
-    System.out.println(i.getKey() + " " + i.getValue());
-  }
-%eof}
 
 /**
 * Patterns
@@ -104,7 +83,7 @@ whitespace = [ \t]
   "*" {return symbolBuilder(LexicalUnit.TIMES);}
   "/" {return symbolBuilder(LexicalUnit.DIVIDE);}
   {number} {return symbolBuilder(LexicalUnit.NUMBER, new Integer(yytext()));}
-  {identifier} {addIdentifier(); return symbolBuilder(LexicalUnit.VARNAME);}
+  {identifier} {return symbolBuilder(LexicalUnit.VARNAME);}
   {whitespace} {}
   . {System.out.println("TOKEN NOT RECOGNIZED: " + yytext());}
 }
