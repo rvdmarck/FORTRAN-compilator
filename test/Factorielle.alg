@@ -8,7 +8,7 @@ PROGRAM factorielle
   resultat = 1
   
   IF (nombre .GE. 0) THEN
-    DO compteur = 1, nombre
+    DO compteur = 1, 10
       resultat = resultat * compteur
     ENDDO
     PRINT*, resultat

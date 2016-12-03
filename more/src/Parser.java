@@ -20,6 +20,7 @@ public class Parser {
     private void peek() {
         try {
             peeked = la.yylex();
+            System.out.println(peeked);
         } catch (IOException e) {
         }
     }
@@ -70,7 +71,7 @@ public class Parser {
             printRule(2, "Vars", "INTEGER <VarList> [EndLine]");
             varlist();
             matchOrThrow(LexicalUnit.ENDLINE);
-        } else if(matchAny(LexicalUnit.ENDLINE, LexicalUnit.VARNAME, LexicalUnit.DO, LexicalUnit.READ, LexicalUnit.IF, LexicalUnit.PRINT)){
+        } else if(matchAny(LexicalUnit.VARNAME, LexicalUnit.DO, LexicalUnit.READ, LexicalUnit.IF, LexicalUnit.PRINT)){
             printRule(3, "Vars", "\u0395");
         }else{
             throw new ParserException(peeked);
@@ -100,7 +101,7 @@ public class Parser {
             instruction();
             matchOrThrow(LexicalUnit.ENDLINE);
             code();
-        } else if(matchAny(LexicalUnit.ENDDO, LexicalUnit.NOT, LexicalUnit.VARNAME, LexicalUnit.NUMBER, LexicalUnit.LEFT_PARENTHESIS, LexicalUnit.MINUS, LexicalUnit.ELSE, LexicalUnit.END, LexicalUnit.ENDIF)){
+        } else if(matchAny(LexicalUnit.ENDDO, LexicalUnit.LEFT_PARENTHESIS, LexicalUnit.MINUS, LexicalUnit.ELSE, LexicalUnit.END, LexicalUnit.ENDIF)){
             printRule(8, "Code", "\u0395");
         } else{
             throw new ParserException(peeked);
@@ -217,24 +218,26 @@ public class Parser {
     }
 
     private void ifrule() throws ParserException{
-        printRule(29, "If", "IF ( <CondA> ) THEN [EndLine] <Code> <Else> ENDIF");
+        printRule(29, "If", "IF ( <CondA> ) THEN [EndLine] <Code> <IfSeq>");
         matchOrThrow(LexicalUnit.IF);
+        matchOrThrow(LexicalUnit.LEFT_PARENTHESIS);
         condA();
+        matchOrThrow(LexicalUnit.RIGHT_PARENTHESIS);
         matchOrThrow(LexicalUnit.THEN);
         matchOrThrow(LexicalUnit.ENDLINE);
         code();
-        elserule();
-        matchOrThrow(LexicalUnit.ENDIF);
+        ifSeq();
     }
 
-    private void elserule() throws ParserException{
-        if (match(LexicalUnit.ELSE)){
-            printRule(30, "Else", "ELSE [EndLine] <Code>");
+    private void ifSeq() throws ParserException{
+        if(match(LexicalUnit.ENDIF)){
+            printRule(30, "Else", "ENDIF");
+        } else if (match(LexicalUnit.ELSE)) {
+            printRule(31, "Else", "ELSE [EndLine] <Code> ENDIF");
             matchOrThrow(LexicalUnit.ENDLINE);
             code();
-        } else if(matchAny(LexicalUnit.ENDIF)){
-            printRule(31, "Else", "\u0395");
-        } else{
+            matchOrThrow(LexicalUnit.ENDIF);
+        } else {
             throw new ParserException(peeked);
         }
     }
@@ -313,6 +316,7 @@ public class Parser {
             default:
                 throw new ParserException(peeked);
         }
+        peek();
     }
 
     private void doRule() throws ParserException{
