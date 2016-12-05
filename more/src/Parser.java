@@ -4,15 +4,27 @@ class Parser {
     private LexicalAnalyzer la;
     private Symbol peeked = null;
 
+    /**
+     * Uber-Fortran Parser
+     * @param la LexicalAnalyzer containing code scan
+     */
     Parser(LexicalAnalyzer la) {
         this.la = la;
     }
 
+    /**
+     * run the Parser
+     * @throws ParserException
+     */
     void run() throws ParserException {
         peek();
         program();
     }
 
+    /**
+     * peek the next token from lexical analyzer
+     * May throw a runtime exception in case of IO Error
+     */
     private void peek() {
         try {
             peeked = la.yylex();
@@ -21,6 +33,12 @@ class Parser {
         }
     }
 
+    /**
+     * check if unit match peeked
+     * side effect: if it does, peek next token
+     * @param unit to match with peeked
+     * @return if it does match
+     */
     private boolean match(LexicalUnit unit) {
         LexicalUnit lu = peeked.getType();
         if (unit == lu) {
@@ -30,6 +48,11 @@ class Parser {
         return false;
     }
 
+    /**
+     * Check for matching unit in a list with the peeked one
+     * @param units list of units to try
+     * @return if at least one of the units match with peeked
+     */
     private boolean matchAny(LexicalUnit... units) {
         LexicalUnit lu = peeked.getType();
         for (LexicalUnit u : units) {
@@ -39,6 +62,13 @@ class Parser {
         return false;
     }
 
+    /**
+     * try to match or fail if it does not
+     * @param lu lexical unit to check
+     * @param rule rule number if it fails
+     * @return true if it match
+     * @throws ParserException
+     */
     private boolean matchOrThrow(LexicalUnit lu, int rule) throws ParserException {
         if (!match(lu))
             throw new ParserException(peeked, rule);
@@ -46,6 +76,12 @@ class Parser {
             return true;
     }
 
+    /**
+     * pretty printer for rules
+     * @param n rule number
+     * @param left part in the left of arrow
+     * @param right part in the right of arrow
+     */
     private void printRule(int n, String left, String right) {
         String nStr = "[" + n + "]";
         left = "<" + left + ">";
