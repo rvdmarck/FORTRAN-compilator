@@ -58,7 +58,12 @@ class Parser {
         matchOrThrow(LexicalUnit.VARNAME, 1);
         matchOrThrow(LexicalUnit.ENDLINE, 1);
         vars();
-        code();
+        if (matchAny(LexicalUnit.VARNAME, LexicalUnit.DO, LexicalUnit.READ, LexicalUnit.IF, LexicalUnit.PRINT, LexicalUnit.ENDDO, LexicalUnit.LEFT_PARENTHESIS, LexicalUnit.MINUS, LexicalUnit.ELSE, LexicalUnit.END,
+                LexicalUnit.ENDIF)){
+            code();
+        } else {
+            throw new ParserException(peeked, 1);
+        }
         matchOrThrow(LexicalUnit.END, 1);
     }
 
@@ -226,7 +231,12 @@ class Parser {
         matchOrThrow(LexicalUnit.RIGHT_PARENTHESIS, 29);
         matchOrThrow(LexicalUnit.THEN, 29);
         matchOrThrow(LexicalUnit.ENDLINE, 29);
-        code();
+        if (matchAny(LexicalUnit.VARNAME, LexicalUnit.DO, LexicalUnit.READ, LexicalUnit.IF, LexicalUnit.PRINT, LexicalUnit.ENDDO, LexicalUnit.LEFT_PARENTHESIS, LexicalUnit.MINUS, LexicalUnit.ELSE, LexicalUnit.END,
+                LexicalUnit.ENDIF)){
+            code();
+        } else {
+            throw new ParserException(peeked, 29);
+        }
         ifSeq();
     }
 
@@ -236,7 +246,12 @@ class Parser {
         } else if (match(LexicalUnit.ELSE)) {
             printRule(31, "Else", "ELSE [EndLine] <Code> ENDIF");
             matchOrThrow(LexicalUnit.ENDLINE, 31);
-            code();
+            if (matchAny(LexicalUnit.VARNAME, LexicalUnit.DO, LexicalUnit.READ, LexicalUnit.IF, LexicalUnit.PRINT, LexicalUnit.ENDDO, LexicalUnit.LEFT_PARENTHESIS, LexicalUnit.MINUS, LexicalUnit.ELSE, LexicalUnit.END,
+                    LexicalUnit.ENDIF)){
+                code();
+            } else {
+                throw new ParserException(peeked, 31);
+            }
             matchOrThrow(LexicalUnit.ENDIF, 31);
         } else {
             throw new ParserException(peeked, 29);
@@ -263,7 +278,11 @@ class Parser {
 
     private void condB() throws ParserException {
         printRule(35, "CondB", "<CondC> <D>");
-        condC();
+        if (matchAny(LexicalUnit.NOT, LexicalUnit.VARNAME, LexicalUnit.NUMBER, LexicalUnit.LEFT_PARENTHESIS, LexicalUnit.MINUS)){
+            condC();
+        } else {
+            throw new ParserException(peeked, 35);
+        }
         d();
     }
 
@@ -329,7 +348,12 @@ class Parser {
         matchOrThrow(LexicalUnit.COMMA, 47);
         matchOrThrow(LexicalUnit.NUMBER, 47);
         matchOrThrow(LexicalUnit.ENDLINE, 47);
-        code();
+        if (matchAny(LexicalUnit.VARNAME, LexicalUnit.DO, LexicalUnit.READ, LexicalUnit.IF, LexicalUnit.PRINT, LexicalUnit.ENDDO, LexicalUnit.LEFT_PARENTHESIS, LexicalUnit.MINUS, LexicalUnit.ELSE, LexicalUnit.END,
+                LexicalUnit.ENDIF)){
+            code();
+        } else {
+            throw new ParserException(peeked, 47);
+        }
         matchOrThrow(LexicalUnit.ENDDO, 47);
     }
 
