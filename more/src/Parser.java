@@ -10,6 +10,7 @@ class Parser {
     private Symbol peeked = null;
     private static Map<String, Integer> variables = new HashMap<String, Integer>();
     private static int counter = -1;
+    private static int lastID = 0;
     private List<Symbol> tmpSymbolList = new ArrayList<Symbol>();
 
 
@@ -20,10 +21,16 @@ class Parser {
         variables.put(privateName, new Integer(++counter));
     }
 
-    public static void check(String varname) throws CompilationException {
-        final String privateName = "_" + varname;
-        if (!variables.containsKey(privateName))
-            throw new CompilationException("Undeclared " + varname);
+    public static boolean check(Symbol varname) throws CompilationException {
+        final String privateName = "_" + varname.getValue();
+        if (!variables.containsKey(privateName)) {
+            throw new CompilationException("Undeclared " + varname.getValue());
+        }
+        return true;
+    }
+
+    protected static String nextVariable(){
+        return (++lastID)+"";
     }
 
     /**
@@ -118,7 +125,34 @@ class Parser {
 
     private void program() throws ParserException, CompilationException {
         //printRule(1, "Program", "PROGRAM [ProgName] [EndLine] <Vars> <Code> END");
-        System.out.println("@formatString = constant [4 x i8] c\"%d\\0A\\00\"\ndeclare i32 @getchar();\ndeclare i32 @putchar(i32);");
+        System.out.println("@formatString = constant [4 x i8] c\"%d\\0A\\00\"\ndeclare i32 @getchar()\ndeclare i32 @printf(i8*,...)");
+        System.out.println("define i32 @readInt(){\n" +
+                "  entry:\n" +
+                "    %msg = getelementptr inbounds [4 x i8], [4 x i8]* @formatString, i32 0, i32 0\n" +
+                "    %res = alloca i32\n" +
+                "    %digit = alloca i32\n" +
+                "    store i32 0, i32* %res\n" +
+                "    br label %read\n" +
+                "  read:\n" +
+                "    %char = call i32 @getchar()\n" +
+                "    %num = sub i32 %char, 48\n" +
+                "    store i32 %num, i32* %digit\n" +
+                "    %comp1 = icmp sle i32 0, %num\n" +
+                "    %comp2 = icmp sge i32 9, %num\n" +
+                "    %comp3 = and i1 %comp1, %comp2\n" +
+                "    %comp = icmp eq i1 %comp3, 1\n" +
+                "    br i1 %comp, label %save, label %exit\n" +
+                "  save:\n" +
+                "    %0 = load i32, i32* %res\n" +
+                "    %1 = load i32, i32* %digit\n" +
+                "    %2 = mul i32 %0, 10\n" +
+                "    %3 = add i32 %2, %1\n" +
+                "    store i32 %3, i32* %res\n" +
+                "    br label %read\n" +
+                "  exit:\n" +
+                "    %ex = load i32, i32* %res\n" +
+                "    ret i32 %ex\n" +
+                "}");
         System.out.println("define i32 @main()\n\tentry:\n\t%msg = getelementptr inbounds [4 x i8], [4 x i8]* @formatString, i32 0, i32 0");
         matchOrThrow(LexicalUnit.PROGRAM, 1);
         matchOrThrow(LexicalUnit.VARNAME, 1);
@@ -446,9 +480,12 @@ class Parser {
         matchOrThrow(LexicalUnit.READ, 49);
         matchOrThrow(LexicalUnit.COMMA, 49);
         varlist();
-        System.out.println("Size: "+tmpSymbolList.size());
         for(Symbol s: tmpSymbolList){
-            System.out.println(s.getValue());
+            String tmp = nextVariable();
+            if(check(s)) {
+                System.out.println("\t\t%" + tmp + "= call i32 readInt()" +
+                        "\n\t\tstore i32 %" + tmp + ", i32* %_" + s.getValue());
+            }
         }
         tmpSymbolList.clear();
     }
