@@ -1,8 +1,26 @@
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 
 class Parser {
     private LexicalAnalyzer la;
     private Symbol peeked = null;
+    private static Map<String,Integer> variables	= new HashMap<String,Integer>();
+    private static int counter							= -1;
+
+    public static void create(Symbol varname)throws Exception{
+        final String privateName = "_" + varname.getValue();
+        if(variables.containsKey(privateName))
+            throw new Exception("Already declared "+varname);
+        variables.put(privateName,new Integer(++counter));
+    }
+
+    public static void check(String varname)throws Exception{
+        final String privateName = "_" + varname;
+        if(!variables.containsKey(privateName))
+            throw new Exception("Undeclared "+varname);
+    }
 
     /**
      * Uber-Fortran Parser
@@ -89,7 +107,8 @@ class Parser {
     }
 
     private void program() throws ParserException {
-        printRule(1, "Program", "PROGRAM [ProgName] [EndLine] <Vars> <Code> END");
+        //printRule(1, "Program", "PROGRAM [ProgName] [EndLine] <Vars> <Code> END");
+        System.out.println("declare i32 @getchar();\ndeclare i32 @putchar(i32);");
         matchOrThrow(LexicalUnit.PROGRAM, 1);
         matchOrThrow(LexicalUnit.VARNAME, 1);
         matchOrThrow(LexicalUnit.ENDLINE, 1);
@@ -116,14 +135,18 @@ class Parser {
     }
 
     private void varlist() throws ParserException {
-        printRule(4, "VarList", "[VarName] <FollowVarList>");
+        //printRule(4, "VarList", "[VarName] <FollowVarList>");
+        Symbol tmp = peeked;
         matchOrThrow(LexicalUnit.VARNAME, 4);
+        create(tmp); System.out.println("\t\t%_"+tmp.getValue()+" = alloca i32");
         followVarlist();
     }
 
     private void followVarlist() throws ParserException {
+        Symbol tmp = peeked;
         if (match(LexicalUnit.COMMA)) {
-            printRule(5, "FollowVarList", ", <VarList>");
+            create(tmp); System.out.println("\t\t%_"+tmp.getValue()+" = alloca i32");
+            //printRule(5, "FollowVarList", ", <VarList>");
             varlist();
         } else if (matchAny(LexicalUnit.ENDLINE)) {
             printRule(6, "FollowVarList", "\u0395");
