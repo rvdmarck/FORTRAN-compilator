@@ -11,6 +11,8 @@ public class Main {
             System.out.println("File Not Found: " + args[0]);
         } catch (ParserException e) {
             System.err.println(e);
+        } catch (CompilationException e){
+            System.err.println(e);
         }
     }
 }
