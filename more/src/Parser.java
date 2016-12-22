@@ -13,6 +13,7 @@ class Parser {
     private static int loopID = 0;
     private static int ifID = 0;
     private static Stack<String> tempStack = new Stack<>();
+    private static Stack<Integer> ifIdStack = new Stack<>();
 
 
 
@@ -209,7 +210,7 @@ class Parser {
             throw new ParserException(peeked, 1);
         }
         matchOrThrow(LexicalUnit.END, 1);
-        System.out.println("\tret void\n}");
+        System.out.println("\t\tret void\n}");
     }
 
     private void vars() throws ParserException, CompilationException {
@@ -398,12 +399,11 @@ class Parser {
     private void ifrule() throws ParserException, CompilationException {
        //printRule(29, "If", "IF ( <CondA> ) THEN [EndLine] <Code> <IfSeq>");
         matchOrThrow(LexicalUnit.IF, 29);
+        ifIdStack.push(ifID++);
         matchOrThrow(LexicalUnit.LEFT_PARENTHESIS, 29);
         condA();
-        System.out.println("\t\tbr i1 "+ tempStack.peek() +", label %IfEqual" + ifID + ", label %IfUnequal"+ifID);
-        System.out.println("\t" + "IfEqual" + ifID + ":");
-        ifID++;
-
+        System.out.println("\t\tbr i1 "+ tempStack.peek() +", label %If" + ifIdStack.peek() + ", label %Else" + ifIdStack.peek());
+        System.out.println("\t" + "If" + ifIdStack.peek() + ":");
 
         matchOrThrow(LexicalUnit.RIGHT_PARENTHESIS, 29);
         matchOrThrow(LexicalUnit.THEN, 29);
@@ -411,24 +411,26 @@ class Parser {
         if (matchAny(LexicalUnit.VARNAME, LexicalUnit.DO, LexicalUnit.READ, LexicalUnit.IF, LexicalUnit.PRINT, LexicalUnit.ENDDO, LexicalUnit.LEFT_PARENTHESIS, LexicalUnit.MINUS, LexicalUnit.ELSE, LexicalUnit.END,
                 LexicalUnit.ENDIF)) {
             code();
+            System.out.println("\t\tbr label %Endif" + ifIdStack.peek());
         } else {
             throw new ParserException(peeked, 29);
         }
         ifSeq();
+        System.out.println("\tEndif" + ifIdStack.peek() + ":");
+        ifIdStack.pop();
     }
 
     private void ifSeq() throws ParserException, CompilationException {
         if (match(LexicalUnit.ENDIF)) {
            //printRule(30, "Else", "ENDIF");
         } else if (match(LexicalUnit.ELSE)) {
-            ifID--;
             System.out.println("\t" + "IfUnequal" + ifID + ":");
-            ifID++;
            //printRule(31, "Else", "ELSE [EndLine] <Code> ENDIF");
             matchOrThrow(LexicalUnit.ENDLINE, 31);
             if (matchAny(LexicalUnit.VARNAME, LexicalUnit.DO, LexicalUnit.READ, LexicalUnit.IF, LexicalUnit.PRINT, LexicalUnit.ENDDO, LexicalUnit.LEFT_PARENTHESIS, LexicalUnit.MINUS, LexicalUnit.ELSE, LexicalUnit.END,
                     LexicalUnit.ENDIF)) {
                 code();
+                System.out.println("\t\tbr label %Endif" + ifIdStack.peek());
             } else {
                 throw new ParserException(peeked, 31);
             }
