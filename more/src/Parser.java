@@ -10,7 +10,7 @@ class Parser {
     private static int lastID = 0;
     private static List<Symbol> tmpSymbolList = new ArrayList<Symbol>();
     private static String LLVMFilePath;
-    private static LinkedList<String> tempStack = new LinkedList<>();
+    private static Stack<String> tempStack = new Stack<>();
 
 
     /**
@@ -294,7 +294,7 @@ class Parser {
     }
 
     private void exprArithB() throws ParserException, CompilationException {
-        printRule(18, "ExprArithB", "<ExprArithC> <X>");
+        //printRule(18, "ExprArithB", "<ExprArithC> <X>");
         exprArithC();
         x();
     }
