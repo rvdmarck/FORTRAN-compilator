@@ -6,8 +6,24 @@ define i32 @readInt(){
 		%msg = getelementptr inbounds [4 x i8], [4 x i8]* @formatString, i32 0, i32 0
 		%res = alloca i32
 		%digit = alloca i32
+		%negative = alloca i1
 		store i32 0, i32* %res
+		br label %read1
+	read1:
+		%char0 = call i32 @getchar()
+		%isnega = icmp eq i32 %char0, 45
+		store i1 %isnega, i1* %negative
+		br i1 %isnega, label %nega, label %posi
+	nega:
 		br label %read
+	posi:
+		%num0 = sub i32 %char0, 48
+		store i32 %num0, i32* %digit
+		%comp10 = icmp sle i32 0, %num0
+		%comp20 = icmp sge i32 9, %num0
+		%comp30 = and i1 %comp10, %comp20
+		%comp0 = icmp eq i1 %comp30, 1
+		br i1 %comp0, label %save, label %exit
 	read:
 		%char = call i32 @getchar()
 		%num = sub i32 %char, 48
@@ -25,7 +41,16 @@ define i32 @readInt(){
 		store i32 %3, i32* %res
 		br label %read
 	exit:
+		%n = load i1, i1* %negative
+		br i1 %n, label %negate, label %end
+	negate:
+		%r = load i32, i32* %res
+		%4 = sub i32 0, %r
+		store i32 %4, i32* %res
+		br label %end
+	end:
 		%ex = load i32, i32* %res
+		%pr = call i32(i8*,...) @printf(i8* %msg, i32 %ex)
 		ret i32 %ex
 }
 define void @main(){

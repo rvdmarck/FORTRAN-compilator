@@ -179,8 +179,24 @@ class Parser {
                 "\t\t%msg = getelementptr inbounds [4 x i8], [4 x i8]* @formatString, i32 0, i32 0\n" +
                 "\t\t%res = alloca i32\n" +
                 "\t\t%digit = alloca i32\n" +
+                "\t\t%negative = alloca i1\n" +
                 "\t\tstore i32 0, i32* %res\n" +
+                "\t\tbr label %read1\n" +
+                "\tread1:\n" +
+                "\t\t%char0 = call i32 @getchar()\n" +
+                "\t\t%isnega = icmp eq i32 %char0, 45\n" +
+                "\t\tstore i1 %isnega, i1* %negative\n" +
+                "\t\tbr i1 %isnega, label %nega, label %posi\n" +
+                "\tnega:\n" +
                 "\t\tbr label %read\n" +
+                "\tposi:\n" +
+                "\t\t%num0 = sub i32 %char0, 48\n" +
+                "\t\tstore i32 %num0, i32* %digit\n" +
+                "\t\t%comp10 = icmp sle i32 0, %num0\n" +
+                "\t\t%comp20 = icmp sge i32 9, %num0\n" +
+                "\t\t%comp30 = and i1 %comp10, %comp20\n" +
+                "\t\t%comp0 = icmp eq i1 %comp30, 1\n" +
+                "\t\tbr i1 %comp0, label %save, label %exit\n" +
                 "\tread:\n" +
                 "\t\t%char = call i32 @getchar()\n" +
                 "\t\t%num = sub i32 %char, 48\n" +
@@ -198,7 +214,16 @@ class Parser {
                 "\t\tstore i32 %3, i32* %res\n" +
                 "\t\tbr label %read\n" +
                 "\texit:\n" +
+                "\t\t%n = load i1, i1* %negative\n" +
+                "\t\tbr i1 %n, label %negate, label %end\n" +
+                "\tnegate:\n" +
+                "\t\t%r = load i32, i32* %res\n" +
+                "\t\t%4 = sub i32 0, %r\n" +
+                "\t\tstore i32 %4, i32* %res\n" +
+                "\t\tbr label %end\n" +
+                "\tend:\n" +
                 "\t\t%ex = load i32, i32* %res\n" +
+                "\t\t%pr = call i32(i8*,...) @printf(i8* %msg, i32 %ex)\n" +
                 "\t\tret i32 %ex\n" +
                 "}");
         writeLLVM("define void @main(){\n\tentry:\n\t\t%msg = getelementptr inbounds [4 x i8], [4 x i8]* @formatString, i32 0, i32 0");
