@@ -1,8 +1,5 @@
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 class Parser {
@@ -13,7 +10,10 @@ class Parser {
     private static int lastID = 0;
     private static List<Symbol> tmpSymbolList = new ArrayList<Symbol>();
     private static String LLVMFilePath;
-    private boolean firstWrite = true;
+    private boolean appendToLLVFile = false;
+    private static Stack<Symbol> stack = new Stack<>();
+    private static boolean epsX = false;
+    private static boolean exprFinished = true;
 
 
     /**
@@ -33,9 +33,9 @@ class Parser {
     }
 
     private void writeLLVM(String content){
-        try(BufferedWriter bw = new BufferedWriter(new FileWriter(LLVMFilePath, !firstWrite))){
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(LLVMFilePath, appendToLLVFile))){
             bw.write(content);
-            firstWrite = false;
+            appendToLLVFile = true;
         } catch(IOException e) {
             e.printStackTrace();
         }
@@ -277,6 +277,19 @@ class Parser {
         v();
     }
 
+    private Symbol computeOperation(Symbol op1, Symbol operand, Symbol op2){
+        Symbol result = null;
+        if (operand.getValue().equals("+"))
+            result = new Symbol(LexicalUnit.NUMBER, 0, 0, (int) op1.getValue() + (int) op2.getValue());
+        else if (operand.getValue().equals("-"))
+            result = new Symbol(LexicalUnit.NUMBER, 0, 0, (int) op1.getValue() - (int) op2.getValue());
+        else if (operand.getValue().equals("*"))
+            result = new Symbol(LexicalUnit.NUMBER, 0, 0, (int) op1.getValue() * (int) op2.getValue());
+        else if (operand.getValue().equals("/"))
+            result = new Symbol(LexicalUnit.NUMBER, 0, 0, (int) op1.getValue() / (int) op2.getValue());
+        return result;
+    }
+
     private void v() throws ParserException, CompilationException {
         if (matchAny(LexicalUnit.PLUS, LexicalUnit.MINUS)) {
             printRule(16, "V", "<AddOp> <ExprArithB> <V>");
@@ -287,6 +300,60 @@ class Parser {
                 LexicalUnit.DIFFERENT, LexicalUnit.RIGHT_PARENTHESIS, LexicalUnit.TIMES, LexicalUnit.DIVIDE, LexicalUnit.ENDLINE,
                 LexicalUnit.AND, LexicalUnit.OR)) {
             printRule(17, "V", "\u0395");
+
+            if(stack.size()>1 && stack.get(stack.size()-2).getValue().equals("(")){
+                Symbol tmp = stack.pop();
+                stack.pop();
+                stack.push(tmp);
+            }
+            Symbol op1 = null;
+            Symbol op2 = null;
+            Symbol operand = null;
+            Symbol result = null;
+            if(stack.size()>2) {
+                op2 = stack.pop();
+                operand = stack.pop();
+                op1 = stack.pop();
+                result = null;
+                if (operand.getValue().equals("+"))
+                    result = new Symbol(LexicalUnit.NUMBER, 0, 0, (int) op1.getValue() + (int) op2.getValue());
+                else if (operand.getValue().equals("-")) {
+                    if (!(op1.getValue().equals("+") || op1.getValue().equals("-") || op1.getValue().equals("*") || op1.getValue().equals("/"))) {
+                        result = new Symbol(LexicalUnit.NUMBER, 0, 0, (int) op1.getValue() - (int) op2.getValue());
+                    } else {
+                        stack.push(op1);
+                        result = new Symbol(LexicalUnit.NUMBER, 0, 0, -(int) op2.getValue());
+                    }
+                } else if (operand.getValue().equals("*"))
+                    result = new Symbol(LexicalUnit.NUMBER, 0, 0, (int) op1.getValue() * (int) op2.getValue());
+                else if (operand.getValue().equals("/"))
+                    result = new Symbol(LexicalUnit.NUMBER, 0, 0, (int) op1.getValue() / (int) op2.getValue());
+                System.out.println("Do(V): " + op1.getValue() + operand.getValue() + op2.getValue());
+                if (stack.size() > 0 && stack.get(stack.size() - 1).getValue().equals("(")) {
+                    stack.pop();
+                }
+                stack.push(result);
+            }
+            System.out.println(Arrays.toString(stack.toArray()));
+            System.out.println(exprFinished);
+            while(stack.size()>1 && (stack.get(stack.size()-2).getValue().equals("+") || stack.get(stack.size()-2).getValue().equals("-") || stack.get(stack.size()-2).getValue().equals("*") || stack.get(stack.size()-2).getValue().equals("/")) && exprFinished){
+                if(stack.size()>2) {
+                    op2 = stack.pop();
+                    operand = stack.pop();
+                    op1 = stack.pop();
+                    result = computeOperation(op1, operand, op2);
+                    System.out.println("Do2(V): " + op1.getValue() + operand.getValue() + op2.getValue());
+
+                }else{
+                    op1 = stack.pop();
+                    operand = stack.pop();
+                    result = new Symbol(LexicalUnit.NUMBER, 0, 0, - (int) op1.getValue());
+                    System.out.println("Do2(V): " + operand.getValue() + op1.getValue());
+                }
+                stack.push(result);
+            }
+
+            System.out.println(Arrays.toString(stack.toArray()));
         } else {
             throw new ParserException(peeked, 15);
         }
@@ -307,6 +374,8 @@ class Parser {
         } else if (matchAny(LexicalUnit.COMMA, LexicalUnit.EQUAL, LexicalUnit.GREATER_EQUAL, LexicalUnit.GREATER, LexicalUnit.SMALLER_EQUAL,
                 LexicalUnit.DIFFERENT, LexicalUnit.RIGHT_PARENTHESIS, LexicalUnit.ENDLINE, LexicalUnit.AND, LexicalUnit.OR,
                 LexicalUnit.PLUS, LexicalUnit.MINUS)) {
+
+            epsX = true;
             printRule(20, "X", "\u0395");
         } else {
             throw new ParserException(peeked, 18);
@@ -314,23 +383,42 @@ class Parser {
     }
 
     private void exprArithC() throws ParserException, CompilationException {
+        if(!peeked.getValue().equals(")")) {
+            stack.push(peeked);
+            System.out.println(Arrays.toString(stack.toArray()));
+        }
         if (match(LexicalUnit.VARNAME)) {
             printRule(21, "ExprArithC", "[VarName]");
         } else if (match(LexicalUnit.NUMBER)) {
             printRule(22, "ExprArithC", "[Number]");
         } else if (match(LexicalUnit.LEFT_PARENTHESIS)) {
             printRule(23, "ExprArithC", "( <ExprArithA> )");
+            exprFinished = false;
             exprArithA();
+            exprFinished = true;
             matchOrThrow(LexicalUnit.RIGHT_PARENTHESIS, 23);
         } else if (match(LexicalUnit.MINUS)) {
             printRule(24, "ExprArithC", "- <ExprArithA>");
+            exprFinished = false;
             exprArithA();
+            exprFinished = true;
         } else {
             throw new ParserException(peeked, 18);
         }
     }
 
     private void addOp() throws ParserException, CompilationException {
+        if(epsX && stack.size()>2 && !stack.get(stack.size()-2).getValue().equals("(")){
+            Symbol op2 = stack.pop();
+            Symbol operand = stack.pop();
+            Symbol op1 = stack.pop();
+            System.out.println("Do(addOp): "+op1.getValue()+operand.getValue()+op2.getValue());
+            Symbol result = computeOperation(op1, operand, op2);
+            stack.push(result);
+            System.out.println(Arrays.toString(stack.toArray()));
+        }
+        stack.push(peeked);
+        System.out.println(Arrays.toString(stack.toArray()));
         if (match(LexicalUnit.PLUS)) {
             printRule(25, "AddOp", "+");
         } else if (match(LexicalUnit.MINUS)) {
@@ -341,6 +429,8 @@ class Parser {
     }
 
     private void mulOp() throws ParserException, CompilationException {
+        stack.push(peeked);
+        System.out.println(Arrays.toString(stack.toArray()));
         if (match(LexicalUnit.TIMES)) {
             printRule(27, "MulOp", "*");
         } else if (match(LexicalUnit.DIVIDE)) {
