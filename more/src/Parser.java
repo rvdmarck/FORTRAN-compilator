@@ -419,10 +419,10 @@ class Parser {
     }
 
     private void ifSeq() throws ParserException, CompilationException {
+        writeLLVM("\t" + "Else" + ifIdStack.peek() + ":");
         if (match(LexicalUnit.ENDIF)) {
             printRule(30, "Else", "ENDIF");
         } else if (match(LexicalUnit.ELSE)) {
-            writeLLVM("\t" + "Else" + ifIdStack.peek() + ":");
             printRule(31, "Else", "ELSE [EndLine] <Code> ENDIF");
             matchOrThrow(LexicalUnit.ENDLINE, 31);
             if (matchAny(LexicalUnit.VARNAME, LexicalUnit.DO, LexicalUnit.READ, LexicalUnit.IF, LexicalUnit.PRINT, LexicalUnit.ENDDO,
