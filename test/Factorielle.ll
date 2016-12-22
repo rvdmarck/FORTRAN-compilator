@@ -59,11 +59,11 @@ define void @main(){
 		br label %loop0
 	endloop0:
 		%10 = load i32, i32* %_resultat
-		%var0 = call i32(i8*,...) @printf(i8* %msg, i32 %10)
+		%11 = call i32(i8*,...) @printf(i8* %msg, i32 %10)
 		br label %Endif0
-	IfUnequal1:
-		%11 = sub i32 0, 1
-		%var1 = call i32(i8*,...) @printf(i8* %msg, i32 %11)
+	Else0:
+		%12 = sub i32 0, 1
+		%13 = call i32(i8*,...) @printf(i8* %msg, i32 %12)
 		br label %Endif0
 	Endif0:
 		ret void

@@ -14,7 +14,6 @@ class Parser {
     private static int ifID = 0;
     private static Stack<String> tempStack = new Stack<>();
     private static Stack<Integer> ifIdStack = new Stack<>();
-    private static int printCount = 0;
 
 
 
@@ -580,8 +579,8 @@ class Parser {
         matchOrThrow(LexicalUnit.COMMA, 48);
         expList();
         for(String s: tmpPrintSymbolList){
-            System.out.println("\t\t%var"+printCount+" = call i32(i8*,...) @printf(i8* %msg, i32 "+ s +")");
-            printCount++;
+            String tmp = nextVariable();
+            System.out.println("\t\t%" + tmp + " = call i32(i8*,...) @printf(i8* %msg, i32 "+ s +")");
         }
         tmpPrintSymbolList.clear();
     }
