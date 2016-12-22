@@ -433,7 +433,6 @@ class Parser {
             if (matchAny(LexicalUnit.VARNAME, LexicalUnit.DO, LexicalUnit.READ, LexicalUnit.IF, LexicalUnit.PRINT, LexicalUnit.ENDDO, LexicalUnit.LEFT_PARENTHESIS, LexicalUnit.MINUS, LexicalUnit.ELSE, LexicalUnit.END,
                     LexicalUnit.ENDIF)) {
                 code();
-                writeLLVM("\t\tbr label %Endif" + ifIdStack.peek());
             } else {
                 throw new ParserException(peeked, 31);
             }
@@ -441,6 +440,7 @@ class Parser {
         } else {
             throw new ParserException(peeked, 29);
         }
+        writeLLVM("\t\tbr label %Endif" + ifIdStack.peek());
     }
 
     private void condA() throws ParserException, CompilationException {
