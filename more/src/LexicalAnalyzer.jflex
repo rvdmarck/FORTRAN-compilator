@@ -68,12 +68,12 @@ whitespace = [ \t]
   \.not\. {return symbolBuilder(LexicalUnit.NOT);}
   \.and\. {return symbolBuilder(LexicalUnit.AND);}
   \.or\. {return symbolBuilder(LexicalUnit.OR);}
-  \.eq\. {return symbolBuilder(LexicalUnit.EQUAL_COMPARE);}
-  \.ge\. {return symbolBuilder(LexicalUnit.GREATER_EQUAL);}
-  \.gt\. {return symbolBuilder(LexicalUnit.GREATER);}
-  \.le\. {return symbolBuilder(LexicalUnit.SMALLER_EQUAL);}
-  \.lt\. {return symbolBuilder(LexicalUnit.SMALLER);}
-  \.ne\. {return symbolBuilder(LexicalUnit.DIFFERENT);}
+  \.eq\. {return symbolBuilder(LexicalUnit.EQUAL_COMPARE, "eq");}
+  \.ge\. {return symbolBuilder(LexicalUnit.GREATER_EQUAL, "sge");}
+  \.gt\. {return symbolBuilder(LexicalUnit.GREATER, "sgt");}
+  \.le\. {return symbolBuilder(LexicalUnit.SMALLER_EQUAL, "sle");}
+  \.lt\. {return symbolBuilder(LexicalUnit.SMALLER, "slt");}
+  \.ne\. {return symbolBuilder(LexicalUnit.DIFFERENT, "ne");}
   "," {return symbolBuilder(LexicalUnit.COMMA);}
   "=" {return symbolBuilder(LexicalUnit.EQUAL);}
   "(" {return symbolBuilder(LexicalUnit.LEFT_PARENTHESIS);}
