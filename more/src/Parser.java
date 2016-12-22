@@ -1,8 +1,5 @@
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 class Parser {
@@ -13,6 +10,7 @@ class Parser {
     private static int lastID = 0;
     private static List<Symbol> tmpSymbolList = new ArrayList<Symbol>();
     private static String LLVMFilePath;
+    private static LinkedList<String> tempStack = new LinkedList<>();
 
 
     /**
