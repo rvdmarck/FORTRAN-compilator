@@ -13,7 +13,6 @@ class Parser {
     private static int lastID = 0;
     private static List<Symbol> tmpSymbolList = new ArrayList<Symbol>();
     private static String LLVMFilePath;
-    private boolean firstWrite = true;
 
 
     /**
@@ -24,6 +23,11 @@ class Parser {
     Parser(LexicalAnalyzer la, String srcFilePath) throws CompilationException {
         this.la = la;
         LLVMFilePath = generateLLVMFilePath(srcFilePath);
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(LLVMFilePath))){
+            bw.write("");
+        } catch(IOException e) {
+            System.err.println("Could not open output file !");
+        }
     }
 
     private String generateLLVMFilePath(String srcFilePath){
@@ -33,11 +37,10 @@ class Parser {
     }
 
     private void writeLLVM(String content){
-        try(BufferedWriter bw = new BufferedWriter(new FileWriter(LLVMFilePath, !firstWrite))){
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(LLVMFilePath, true))){
             bw.write(content);
-            firstWrite = false;
         } catch(IOException e) {
-            e.printStackTrace();
+            System.err.println("Could not open output file !");
         }
 
     }
