@@ -554,7 +554,10 @@ class Parser {
         System.out.println("\t\tbr i1 " + newID_ + ", label %end" + newID.substring(1) +", label %continue"+newID.substring(1));
         System.out.println("\tcontinue"+newID.substring(1)+":");
         String increment = "%" + nextVariable();
-        System.out.println("\t\t" + increment + " = add i32 " + newID + "count, 1");
+        System.out.println("\t\t" + increment + " = load i32, i32* " + newID + "count");
+        String increment2 = "%" + nextVariable();
+        System.out.println("\t\t" + increment2 + " = add i32 1, " + increment);
+        System.out.println("\t\tstore i32 " + increment2 + ", i32* " + newID + "count");
         matchOrThrow(LexicalUnit.NUMBER, 47);
         matchOrThrow(LexicalUnit.ENDLINE, 47);
         if (matchAny(LexicalUnit.VARNAME, LexicalUnit.DO, LexicalUnit.READ, LexicalUnit.IF, LexicalUnit.PRINT, LexicalUnit.ENDDO, LexicalUnit.LEFT_PARENTHESIS, LexicalUnit.MINUS, LexicalUnit.ELSE, LexicalUnit.END,
