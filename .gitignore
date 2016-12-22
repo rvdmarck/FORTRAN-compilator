@@ -11,7 +11,8 @@
 hs_err_pid*
 
 # User-specific stuff:
-.idea/*
+test/*.ll
+.idea/
 .idea/workspace.xml
 .idea/tasks.xml
 
