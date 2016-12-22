@@ -1,4 +1,5 @@
 PROGRAM arithtest
-    Integer nombre
+    Integer nombre, autre
     nombre = 1 * -(5 + 6) * 7
+    autre = nombre * 2
 END

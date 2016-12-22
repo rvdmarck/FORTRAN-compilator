@@ -154,33 +154,33 @@ class Parser {
         //printRule(1, "Program", "PROGRAM [ProgName] [EndLine] <Vars> <Code> END");
         System.out.println("@formatString = constant [4 x i8] c\"%d\\0A\\00\"\ndeclare i32 @getchar()\ndeclare i32 @printf(i8*,...)");
         System.out.println("define i32 @readInt(){\n" +
-                "  entry:\n" +
-                "    %msg = getelementptr inbounds [4 x i8], [4 x i8]* @formatString, i32 0, i32 0\n" +
-                "    %res = alloca i32\n" +
-                "    %digit = alloca i32\n" +
-                "    store i32 0, i32* %res\n" +
-                "    br label %read\n" +
-                "  read:\n" +
-                "    %char = call i32 @getchar()\n" +
-                "    %num = sub i32 %char, 48\n" +
-                "    store i32 %num, i32* %digit\n" +
-                "    %comp1 = icmp sle i32 0, %num\n" +
-                "    %comp2 = icmp sge i32 9, %num\n" +
-                "    %comp3 = and i1 %comp1, %comp2\n" +
-                "    %comp = icmp eq i1 %comp3, 1\n" +
-                "    br i1 %comp, label %save, label %exit\n" +
-                "  save:\n" +
-                "    %0 = load i32, i32* %res\n" +
-                "    %1 = load i32, i32* %digit\n" +
-                "    %2 = mul i32 %0, 10\n" +
-                "    %3 = add i32 %2, %1\n" +
-                "    store i32 %3, i32* %res\n" +
-                "    br label %read\n" +
-                "  exit:\n" +
-                "    %ex = load i32, i32* %res\n" +
-                "    ret i32 %ex\n" +
+                "\tentry:\n" +
+                "\t\t%msg = getelementptr inbounds [4 x i8], [4 x i8]* @formatString, i32 0, i32 0\n" +
+                "\t\t%res = alloca i32\n" +
+                "\t\t%digit = alloca i32\n" +
+                "\t\tstore i32 0, i32* %res\n" +
+                "\t\tbr label %read\n" +
+                "\tread:\n" +
+                "\t\t%char = call i32 @getchar()\n" +
+                "\t\t%num = sub i32 %char, 48\n" +
+                "\t\tstore i32 %num, i32* %digit\n" +
+                "\t\t%comp1 = icmp sle i32 0, %num\n" +
+                "\t\t%comp2 = icmp sge i32 9, %num\n" +
+                "\t\t%comp3 = and i1 %comp1, %comp2\n" +
+                "\t\t%comp = icmp eq i1 %comp3, 1\n" +
+                "\t\tbr i1 %comp, label %save, label %exit\n" +
+                "\tsave:\n" +
+                "\t\t%0 = load i32, i32* %res\n" +
+                "\t\t%1 = load i32, i32* %digit\n" +
+                "\t\t%2 = mul i32 %0, 10\n" +
+                "\t\t%3 = add i32 %2, %1\n" +
+                "\t\tstore i32 %3, i32* %res\n" +
+                "\t\tbr label %read\n" +
+                "\texit:\n" +
+                "\t\t%ex = load i32, i32* %res\n" +
+                "\t\tret i32 %ex\n" +
                 "}");
-        System.out.println("define i32 @main()\n\tentry:\n\t%msg = getelementptr inbounds [4 x i8], [4 x i8]* @formatString, i32 0, i32 0");
+        System.out.println("define i32 @main()\n\tentry:\n\t\t%msg = getelementptr inbounds [4 x i8], [4 x i8]* @formatString, i32 0, i32 0");
         matchOrThrow(LexicalUnit.PROGRAM, 1);
         matchOrThrow(LexicalUnit.VARNAME, 1);
         matchOrThrow(LexicalUnit.ENDLINE, 1);
@@ -333,7 +333,7 @@ class Parser {
             //printRule(21, "ExprArithC", "[VarName]");
             check(s);
             String newID = "%" + nextVariable();
-            System.out.println(newID + " = load i32, i32* %_" + s.getValue());
+            System.out.println("\t\t" + newID + " = load i32, i32* %_" + s.getValue());
             tempStack.push(new Symbol(LexicalUnit.VARNAME, newID));
         } else if (match(LexicalUnit.NUMBER)) {
             //printRule(22, "ExprArithC", "[Number]");
@@ -343,7 +343,7 @@ class Parser {
             exprArithA();
             matchOrThrow(LexicalUnit.RIGHT_PARENTHESIS, 23);
         } else if (match(LexicalUnit.MINUS)) {
-            printRule(24, "ExprArithC", "- <ExprArithA>");
+            //printRule(24, "ExprArithC", "- <ExprArithA>");
             tempStack.push(new Symbol(LexicalUnit.INTEGER, "-1"));
             tempStack.push(new Symbol(LexicalUnit.TIMES, "mul"));
             exprArithC();
