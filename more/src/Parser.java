@@ -535,14 +535,15 @@ class Parser {
     private void doRule() throws ParserException, CompilationException {
        //printRule(47, "Do", "DO [VarName] = [Number] , [Number] [EndLine] <Code> ENDDO");
         matchOrThrow(LexicalUnit.DO, 47);
+        String counter = (String)peeked.getValue();
+        counter = "%_"+counter;
         matchOrThrow(LexicalUnit.VARNAME, 47);
         matchOrThrow(LexicalUnit.EQUAL, 47);
 
         int startDO = Integer.parseInt((String)peeked.getValue());
         String newID = "%loop" + loopID;
         loopID++;
-        System.out.println("\t\t" + newID + "count = alloca i32");
-        System.out.println("\t\tstore i32 " + startDO + ", i32* " + newID + "count");
+        System.out.println("\t\tstore i32 " + startDO + ", i32* " + counter );
         System.out.println("\t\tbr label "+ newID);
         System.out.println("\t" + newID.substring(1)+":");
 
@@ -551,15 +552,15 @@ class Parser {
         int endDO = Integer.parseInt((String)peeked.getValue());
         String newID__ = "%" + nextVariable();
         String newID_ = "%" + nextVariable();
-        System.out.println("\t\t" + newID__ + " = load i32, i32* " + newID + "count");
+        System.out.println("\t\t" + newID__ + " = load i32, i32* " + counter);
         System.out.println("\t\t" + newID_ + " = icmp eq i32 " + newID__ + "," +  endDO);
         System.out.println("\t\tbr i1 " + newID_ + ", label %end" + newID.substring(1) +", label %continue"+newID.substring(1));
         System.out.println("\tcontinue"+newID.substring(1)+":");
         String increment = "%" + nextVariable();
-        System.out.println("\t\t" + increment + " = load i32, i32* " + newID + "count");
+        System.out.println("\t\t" + increment + " = load i32, i32* " + counter);
         String increment2 = "%" + nextVariable();
         System.out.println("\t\t" + increment2 + " = add i32 1, " + increment);
-        System.out.println("\t\tstore i32 " + increment2 + ", i32* " + newID + "count");
+        System.out.println("\t\tstore i32 " + increment2 + ", i32* " + counter);
         matchOrThrow(LexicalUnit.NUMBER, 47);
         matchOrThrow(LexicalUnit.ENDLINE, 47);
         if (matchAny(LexicalUnit.VARNAME, LexicalUnit.DO, LexicalUnit.READ, LexicalUnit.IF, LexicalUnit.PRINT, LexicalUnit.ENDDO, LexicalUnit.LEFT_PARENTHESIS, LexicalUnit.MINUS, LexicalUnit.ELSE, LexicalUnit.END,

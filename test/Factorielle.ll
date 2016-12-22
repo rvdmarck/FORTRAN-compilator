@@ -41,17 +41,16 @@ define void @main(){
 		%2 = icmp sge i32 %1, 0
 		br i1 %2, label %If0, label %Else0
 	If0:
-		%loop0count = alloca i32
-		store i32 1, i32* %loop0count
+		store i32 1, i32* %_compteur
 		br label %loop0
 	loop0:
-		%3 = load i32, i32* %loop0count
+		%3 = load i32, i32* %_compteur
 		%4 = icmp eq i32 %3,10
 		br i1 %4, label %endloop0, label %continueloop0
 	continueloop0:
-		%5 = load i32, i32* %loop0count
+		%5 = load i32, i32* %_compteur
 		%6 = add i32 1, %5
-		store i32 %6, i32* %loop0count
+		store i32 %6, i32* %_compteur
 		%7 = load i32, i32* %_resultat
 		%8 = load i32, i32* %_compteur
 		%9 = mul i32 %7, %8
@@ -68,4 +67,3 @@ define void @main(){
 	Endif0:
 		ret void
 }
-
