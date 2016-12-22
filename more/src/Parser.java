@@ -15,6 +15,8 @@ class Parser {
     private static String tmpComp = null;
     private static int loopID = 0;
     private static int ifID = 0;
+    private static Stack<String> tempStack = new Stack<>();
+
 
 
     /**
@@ -67,10 +69,24 @@ class Parser {
     }
 
     private static void evaluateArith() {
-        String e2 = (String)tempStack.pop().getValue(), op = (String)tempStack.pop().getValue(), e1 = (String)tempStack.pop().getValue();
+        String e2 = tempStack.pop(), op = tempStack.pop(), e1 = tempStack.pop();
         String newID = "%" + nextVariable();
         System.out.println("\t\t" + newID + " = " + op + " i32 " + e1 + ", " + e2);
-        tempStack.push(new Symbol(LexicalUnit.VARNAME, newID));
+        tempStack.push(newID);
+    }
+
+    private static void evaluateComp() {
+        String e2 = tempStack.pop(), op = tempStack.pop(), e1 = tempStack.pop();
+        String newID = "%" + nextVariable();
+        System.out.println("\t\t" + newID + " = icmp " + op + " i32 " + e1 + ", " + e2);
+        tempStack.push(newID);
+    }
+
+    private static void evaluateCond() {
+        String e2 = tempStack.pop(), op = tempStack.pop(), e1 = tempStack.pop();
+        String newID = "%" + nextVariable();
+        System.out.println("\t\t" + newID + " = icmp " + op + " i1 " + e1 + ", " + e2);
+        tempStack.push(newID);
     }
 
     /**
@@ -158,31 +174,31 @@ class Parser {
         //printRule(1, "Program", "PROGRAM [ProgName] [EndLine] <Vars> <Code> END");
         System.out.println("@formatString = constant [4 x i8] c\"%d\\0A\\00\"\ndeclare i32 @getchar()\ndeclare i32 @printf(i8*,...)");
         System.out.println("define i32 @readInt(){\n" +
-                "  entry:\n" +
-                "    %msg = getelementptr inbounds [4 x i8], [4 x i8]* @formatString, i32 0, i32 0\n" +
-                "    %res = alloca i32\n" +
-                "    %digit = alloca i32\n" +
-                "    store i32 0, i32* %res\n" +
-                "    br label %read\n" +
-                "  read:\n" +
-                "    %char = call i32 @getchar()\n" +
-                "    %num = sub i32 %char, 48\n" +
-                "    store i32 %num, i32* %digit\n" +
-                "    %comp1 = icmp sle i32 0, %num\n" +
-                "    %comp2 = icmp sge i32 9, %num\n" +
-                "    %comp3 = and i1 %comp1, %comp2\n" +
-                "    %comp = icmp eq i1 %comp3, 1\n" +
-                "    br i1 %comp, label %save, label %exit\n" +
-                "  save:\n" +
-                "    %0 = load i32, i32* %res\n" +
-                "    %1 = load i32, i32* %digit\n" +
-                "    %2 = mul i32 %0, 10\n" +
-                "    %3 = add i32 %2, %1\n" +
-                "    store i32 %3, i32* %res\n" +
-                "    br label %read\n" +
-                "  exit:\n" +
-                "    %ex = load i32, i32* %res\n" +
-                "    ret i32 %ex\n" +
+                "\tentry:\n" +
+                "\t\t%msg = getelementptr inbounds [4 x i8], [4 x i8]* @formatString, i32 0, i32 0\n" +
+                "\t\t%res = alloca i32\n" +
+                "\t\t%digit = alloca i32\n" +
+                "\t\tstore i32 0, i32* %res\n" +
+                "\t\tbr label %read\n" +
+                "\tread:\n" +
+                "\t\t%char = call i32 @getchar()\n" +
+                "\t\t%num = sub i32 %char, 48\n" +
+                "\t\tstore i32 %num, i32* %digit\n" +
+                "\t\t%comp1 = icmp sle i32 0, %num\n" +
+                "\t\t%comp2 = icmp sge i32 9, %num\n" +
+                "\t\t%comp3 = and i1 %comp1, %comp2\n" +
+                "\t\t%comp = icmp eq i1 %comp3, 1\n" +
+                "\t\tbr i1 %comp, label %save, label %exit\n" +
+                "\tsave:\n" +
+                "\t\t%0 = load i32, i32* %res\n" +
+                "\t\t%1 = load i32, i32* %digit\n" +
+                "\t\t%2 = mul i32 %0, 10\n" +
+                "\t\t%3 = add i32 %2, %1\n" +
+                "\t\tstore i32 %3, i32* %res\n" +
+                "\t\tbr label %read\n" +
+                "\texit:\n" +
+                "\t\t%ex = load i32, i32* %res\n" +
+                "\t\tret i32 %ex\n" +
                 "}");
         System.out.println("define i32 @main(){\n\tentry:\n\t\t%msg = getelementptr inbounds [4 x i8], [4 x i8]* @formatString, i32 0, i32 0");
         matchOrThrow(LexicalUnit.PROGRAM, 1);
@@ -284,8 +300,8 @@ class Parser {
         check(varname);
         matchOrThrow(LexicalUnit.EQUAL, 14);
         exprArithA();
-        Symbol tmp = tempStack.pop();
-        System.out.println("\t\tstore i32 " + tmp.getValue() + ", i32* %_" + varname.getValue());
+        String tmp = tempStack.pop();
+        System.out.println("\t\tstore i32 " + tmp + ", i32* %_" + varname.getValue());
     }
 
     private void exprArithA() throws ParserException, CompilationException {
@@ -301,7 +317,7 @@ class Parser {
             exprArithB();
             evaluateArith();
             v();
-        } else if (matchAny(LexicalUnit.COMMA, LexicalUnit.EQUAL, LexicalUnit.GREATER_EQUAL, LexicalUnit.GREATER, LexicalUnit.SMALLER_EQUAL,
+        } else if (matchAny(LexicalUnit.COMMA, LexicalUnit.EQUAL, LexicalUnit.GREATER_EQUAL, LexicalUnit.GREATER, LexicalUnit.SMALLER_EQUAL, LexicalUnit.SMALLER,
                 LexicalUnit.DIFFERENT, LexicalUnit.RIGHT_PARENTHESIS, LexicalUnit.TIMES, LexicalUnit.DIVIDE, LexicalUnit.ENDLINE,
                 LexicalUnit.AND, LexicalUnit.OR)) {
            //printRule(17, "V", "\u0395");
@@ -323,7 +339,7 @@ class Parser {
             exprArithC();
             evaluateArith();
             x();
-        } else if (matchAny(LexicalUnit.COMMA, LexicalUnit.EQUAL, LexicalUnit.GREATER_EQUAL, LexicalUnit.GREATER, LexicalUnit.SMALLER_EQUAL,
+        } else if (matchAny(LexicalUnit.COMMA, LexicalUnit.EQUAL, LexicalUnit.GREATER_EQUAL, LexicalUnit.GREATER, LexicalUnit.SMALLER_EQUAL, LexicalUnit.SMALLER,
                 LexicalUnit.DIFFERENT, LexicalUnit.RIGHT_PARENTHESIS, LexicalUnit.ENDLINE, LexicalUnit.AND, LexicalUnit.OR,
                 LexicalUnit.PLUS, LexicalUnit.MINUS)) {
             //printRule(20, "X", "\u0395");
@@ -338,19 +354,19 @@ class Parser {
             //printRule(21, "ExprArithC", "[VarName]");
             check(s);
             String newID = "%" + nextVariable();
-            System.out.println("\t\t"+newID + " = load i32, i32* %_" + s.getValue());
-            tempStack.push(new Symbol(LexicalUnit.VARNAME, newID));
+            System.out.println("\t\t" + newID + " = load i32, i32* %_" + s.getValue());
+            tempStack.push(newID);
         } else if (match(LexicalUnit.NUMBER)) {
             //printRule(22, "ExprArithC", "[Number]");
-            tempStack.push(s);
+            tempStack.push((String)s.getValue());
         } else if (match(LexicalUnit.LEFT_PARENTHESIS)) {
             //printRule(23, "ExprArithC", "( <ExprArithA> )");
             exprArithA();
             matchOrThrow(LexicalUnit.RIGHT_PARENTHESIS, 23);
         } else if (match(LexicalUnit.MINUS)) {
-            //printRule(24, "ExprArithC", "- <ExprArithA>");
-            tempStack.push(new Symbol(LexicalUnit.INTEGER, "-1"));
-            tempStack.push(new Symbol(LexicalUnit.TIMES, "mul"));
+            //printRule(24, "ExprArithC", "- <ExprArithC>");
+            tempStack.push("0");
+            tempStack.push("sub");
             exprArithC();
             evaluateArith();
         } else {
@@ -367,7 +383,7 @@ class Parser {
         } else {
             throw new ParserException(peeked, 16);
         }
-        tempStack.push(op);
+        tempStack.push((String)op.getValue());
     }
 
     private void mulOp() throws ParserException, CompilationException {
@@ -379,7 +395,7 @@ class Parser {
         } else {
             throw new ParserException(peeked, 19);
         }
-        tempStack.push(op);
+        tempStack.push((String)op.getValue());
     }
 
     private void ifrule() throws ParserException, CompilationException {
@@ -429,7 +445,9 @@ class Parser {
     private void b() throws ParserException, CompilationException {
         if (match(LexicalUnit.OR)) {
            //printRule(33, "B", ".OR. <CondB> <B>");
+            tempStack.push("or");
             condB();
+            evaluateCond();
             b();
         } else if (matchAny(LexicalUnit.RIGHT_PARENTHESIS)) {
            //printRule(34, "B", "\u0395");
@@ -451,7 +469,9 @@ class Parser {
     private void d() throws ParserException, CompilationException {
         if (match(LexicalUnit.AND)) {
            //printRule(36, "D", ".AND. <CondC>");
+            tempStack.push("and");
             condC();
+            evaluateCond();
         } else if (matchAny(LexicalUnit.OR, LexicalUnit.RIGHT_PARENTHESIS)) {
            //printRule(37, "D", "\u0395");
         } else {
@@ -462,10 +482,14 @@ class Parser {
     private void condC() throws ParserException, CompilationException {
         if (match(LexicalUnit.NOT)) {
            //printRule(38, "CondC", ".NOT. <SimpleCond>");
+            tempStack.push("1");
+            tempStack.push("xor");
+            simpleCond();
+            evaluateCond();
         } else {
-           //printRule(39, "CondC", "<SimpleCond>");
+            //printRule(39, "CondC", "<SimpleCond>");
+            simpleCond();
         }
-        simpleCond();
     }
 
     private void simpleCond() throws ParserException, CompilationException {
@@ -473,42 +497,35 @@ class Parser {
         exprArithA();
         comp();
         exprArithA();
-        String newID = "%cond";
-        System.out.println("\t\t" + newID + " = " + tmpComp + " i32 " + tempStack.get(0).getValue() + ", " + tempStack.get(1).getValue());
-        System.out.println("\t\tbr i1 "+ newID+", label %IfEqual" + ifID + ", label %IfUnequal"+ifID);
-        System.out.println("\t" + "IfEqual" + ifID + ":");
-        ifID++;
+
+        evaluateComp();
+
     }
 
     private void comp() throws ParserException, CompilationException {
         switch (peeked.getType()) {
             case EQUAL_COMPARE:
-               //printRule(41, "Comp", ".EQ.");
-                tmpComp = "icmp eq";
+                //printRule(41, "Comp", ".EQ.");
                 break;
             case GREATER_EQUAL:
-                tmpComp = "icmp sge";
-               //printRule(42, "Comp", ".GE.");
+                //printRule(42, "Comp", ".GE.");
                 break;
             case GREATER:
-                tmpComp = "icmp sgt";
-               //printRule(43, "Comp", ".GT.");
+                //printRule(43, "Comp", ".GT.");
                 break;
             case SMALLER_EQUAL:
-                tmpComp = "icmp sle";
-               //printRule(44, "Comp", ".LE.");
+                //printRule(44, "Comp", ".LE.");
                 break;
             case SMALLER:
-                tmpComp = "icmp slt";
-               //printRule(45, "Comp", ".LT.");
+                //printRule(45, "Comp", ".LT.");
                 break;
             case DIFFERENT:
-                tmpComp = "icmp ne";
-               //printRule(46, "Comp", ".NE.");
+                //printRule(46, "Comp", ".NE.");
                 break;
             default:
                 throw new ParserException(peeked, 40);
         }
+        tempStack.push((String)peeked.getValue());
         peek();
     }
 

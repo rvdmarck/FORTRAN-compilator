@@ -60,13 +60,13 @@ class LexicalAnalyzer {
     "\4\5\1\24\1\0\1\25\1\5\1\25\1\5\7\0"+
     "\1\2\1\0\2\5\1\26\1\0\1\5\1\0\2\5"+
     "\11\0\1\2\1\0\3\5\1\0\1\5\2\27\1\0"+
-    "\1\5\1\30\1\31\1\32\1\33\1\34\1\35\1\0"+
-    "\1\36\1\37\1\40\1\2\1\0\1\5\1\41\1\42"+
-    "\2\43\1\0\1\5\1\44\1\2\1\45\1\0\1\5"+
-    "\1\46\2\47";
+    "\1\5\1\30\1\31\1\32\1\33\1\0\1\34\1\0"+
+    "\1\35\1\36\1\37\1\2\1\0\1\5\1\40\1\41"+
+    "\2\42\1\0\1\5\1\43\1\44\1\2\1\45\1\0"+
+    "\1\5\1\46\2\47";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[117];
+    int [] result = new int[118];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -102,13 +102,13 @@ class LexicalAnalyzer {
     "\0\u05e8\0\u060c\0\u0630\0\u0654\0\u0678\0\u069c\0\u06c0\0\u06e4"+
     "\0\u0708\0\u072c\0\u0750\0\u0774\0\u0798\0\u07bc\0\u07e0\0\u0804"+
     "\0\u0828\0\u084c\0\u0870\0\u0894\0\u08b8\0\u08dc\0\330\0\u0168"+
-    "\0\u0900\0\u0924\0\u0168\0\330\0\330\0\330\0\330\0\330"+
-    "\0\u0948\0\330\0\330\0\330\0\u096c\0\u0990\0\u09b4\0\330"+
-    "\0\u0168\0\330\0\u0168\0\u09d8\0\u09fc\0\330\0\u0a20\0\330"+
-    "\0\u0a44\0\u0a68\0\374\0\330\0\u0168";
+    "\0\u0900\0\u0924\0\u0168\0\330\0\330\0\330\0\u0948\0\330"+
+    "\0\u096c\0\330\0\330\0\330\0\u0990\0\u09b4\0\u09d8\0\330"+
+    "\0\u0168\0\330\0\u0168\0\u09fc\0\u0a20\0\330\0\330\0\u0a44"+
+    "\0\330\0\u0a68\0\u0a8c\0\374\0\330\0\u0168";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[117];
+    int [] result = new int[118];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -191,7 +191,7 @@ class LexicalAnalyzer {
     "\1\0\5\16\1\0\1\16\1\0\1\16\10\0\2\16"+
     "\5\0\7\16\1\0\1\16\1\133\1\16\1\0\5\16"+
     "\1\0\1\16\1\0\1\16\42\0\1\134\43\0\1\135"+
-    "\43\0\1\136\43\0\1\137\43\0\1\140\35\0\1\141"+
+    "\43\0\1\136\32\0\1\137\54\0\1\140\35\0\1\141"+
     "\51\0\1\142\43\0\1\143\43\0\1\144\11\0\2\10"+
     "\5\0\2\10\1\145\4\10\1\0\3\10\1\0\5\10"+
     "\1\0\1\10\1\0\1\10\34\0\1\146\17\0\2\16"+
@@ -204,19 +204,19 @@ class LexicalAnalyzer {
     "\2\16\1\153\2\16\1\0\1\16\1\0\1\16\23\0"+
     "\1\154\30\0\2\16\5\0\4\16\1\155\2\16\1\0"+
     "\3\16\1\0\5\16\1\0\1\16\1\0\1\16\42\0"+
-    "\1\156\11\0\2\10\5\0\5\10\1\157\1\10\1\0"+
-    "\3\10\1\0\5\10\1\0\1\10\1\0\1\10\16\0"+
-    "\1\160\35\0\2\16\4\0\1\160\7\16\1\0\3\16"+
-    "\1\0\5\16\1\0\1\16\1\0\1\16\27\0\1\161"+
-    "\24\0\2\16\5\0\7\16\1\0\1\162\2\16\1\0"+
-    "\5\16\1\0\1\16\1\0\1\16\10\0\2\10\5\0"+
-    "\6\10\1\163\1\0\3\10\1\0\5\10\1\0\1\10"+
-    "\1\0\1\10\21\0\1\164\32\0\2\16\5\0\2\16"+
-    "\1\165\4\16\1\0\3\16\1\0\5\16\1\0\1\16"+
-    "\1\0\1\16\7\0";
+    "\1\156\43\0\1\157\11\0\2\10\5\0\5\10\1\160"+
+    "\1\10\1\0\3\10\1\0\5\10\1\0\1\10\1\0"+
+    "\1\10\16\0\1\161\35\0\2\16\4\0\1\161\7\16"+
+    "\1\0\3\16\1\0\5\16\1\0\1\16\1\0\1\16"+
+    "\27\0\1\162\24\0\2\16\5\0\7\16\1\0\1\163"+
+    "\2\16\1\0\5\16\1\0\1\16\1\0\1\16\10\0"+
+    "\2\10\5\0\6\10\1\164\1\0\3\10\1\0\5\10"+
+    "\1\0\1\10\1\0\1\10\21\0\1\165\32\0\2\16"+
+    "\5\0\2\16\1\166\4\16\1\0\3\16\1\0\5\16"+
+    "\1\0\1\16\1\0\1\16\7\0";
 
   private static int [] zzUnpackTrans() {
-    int [] result = new int[2700];
+    int [] result = new int[2736];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -259,12 +259,13 @@ class LexicalAnalyzer {
     "\1\11\2\1\1\0\1\11\1\0\1\11\6\1\1\0"+
     "\1\11\3\1\7\0\1\1\1\0\3\1\1\0\1\1"+
     "\1\0\2\1\11\0\1\1\1\0\3\1\1\0\1\1"+
-    "\1\11\1\1\1\0\2\1\5\11\1\0\3\11\1\1"+
-    "\1\0\1\1\1\11\1\1\1\11\1\1\1\0\1\1"+
-    "\1\11\1\1\1\11\1\0\2\1\1\11\1\1";
+    "\1\11\1\1\1\0\2\1\3\11\1\0\1\11\1\0"+
+    "\3\11\1\1\1\0\1\1\1\11\1\1\1\11\1\1"+
+    "\1\0\1\1\2\11\1\1\1\11\1\0\2\1\1\11"+
+    "\1\1";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[117];
+    int [] result = new int[118];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -865,43 +866,43 @@ private Symbol symbolBuilder(LexicalUnit unit, Object value){
             }
           case 64: break;
           case 26: 
-            { return symbolBuilder(LexicalUnit.GREATER_EQUAL);
+            { return symbolBuilder(LexicalUnit.GREATER_EQUAL, "sge");
             }
           case 65: break;
           case 27: 
-            { return symbolBuilder(LexicalUnit.GREATER);
+            { return symbolBuilder(LexicalUnit.GREATER, "sgt");
             }
           case 66: break;
           case 28: 
-            { return symbolBuilder(LexicalUnit.AND);
+            { return symbolBuilder(LexicalUnit.EQUAL_COMPARE, "eq");
             }
           case 67: break;
           case 29: 
-            { return symbolBuilder(LexicalUnit.EQUAL_COMPARE);
+            { return symbolBuilder(LexicalUnit.DIFFERENT, "ne");
             }
           case 68: break;
           case 30: 
-            { return symbolBuilder(LexicalUnit.DIFFERENT);
+            { return symbolBuilder(LexicalUnit.SMALLER_EQUAL, "sle");
             }
           case 69: break;
           case 31: 
-            { return symbolBuilder(LexicalUnit.SMALLER_EQUAL);
+            { return symbolBuilder(LexicalUnit.SMALLER, "slt");
             }
           case 70: break;
           case 32: 
-            { return symbolBuilder(LexicalUnit.SMALLER);
+            { return symbolBuilder(LexicalUnit.READ);
             }
           case 71: break;
           case 33: 
-            { return symbolBuilder(LexicalUnit.READ);
+            { return symbolBuilder(LexicalUnit.ENDDO);
             }
           case 72: break;
           case 34: 
-            { return symbolBuilder(LexicalUnit.ENDDO);
+            { return symbolBuilder(LexicalUnit.ENDIF);
             }
           case 73: break;
           case 35: 
-            { return symbolBuilder(LexicalUnit.ENDIF);
+            { return symbolBuilder(LexicalUnit.AND);
             }
           case 74: break;
           case 36: 

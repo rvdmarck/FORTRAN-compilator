@@ -2,7 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2e156046-ab29-4a34-aee9-f66c5e11de11" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../test/CondTest.alg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/LexicalAnalyzer.java" afterPath="$PROJECT_DIR$/LexicalAnalyzer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/LexicalAnalyzer.jflex" afterPath="$PROJECT_DIR$/LexicalAnalyzer.jflex" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Parser.java" afterPath="$PROJECT_DIR$/Parser.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../test/ArithTest.alg" afterPath="$PROJECT_DIR$/../../test/ArithTest.alg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../test/Factorielle.alg" afterPath="$PROJECT_DIR$/../../test/Factorielle.alg" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -20,13 +25,13 @@
       <file leaf-file-name="Parser.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Parser.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="453">
-              <caret line="546" column="58" lean-forward="false" selection-start-line="546" selection-start-column="58" selection-end-line="546" selection-end-column="58" />
+            <state relative-caret-position="391">
+              <caret line="597" column="31" lean-forward="false" selection-start-line="597" selection-start-column="31" selection-end-line="597" selection-end-column="31" />
               <folding>
                 <element signature="e#315#323#0" expanded="true" />
                 <element signature="e#393#401#0" expanded="true" />
-                <element signature="e#2259#2260#0" expanded="true" />
-                <element signature="e#2295#2296#0" expanded="true" />
+                <element signature="e#2320#2321#0" expanded="true" />
+                <element signature="e#2356#2357#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -562,12 +567,12 @@
       <option name="presentableId" value="Default" />
       <updated>1482368765716</updated>
       <workItem from="1482368771429" duration="6510000" />
-      <workItem from="1482412140925" duration="23590000" />
+      <workItem from="1482412140925" duration="24304000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="30100000" />
+    <option name="totallyTimeSpent" value="30814000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="24" width="1855" height="951" extended-state="6" />
@@ -621,8 +626,8 @@
           <folding>
             <element signature="e#315#323#0" expanded="true" />
             <element signature="e#393#401#0" expanded="true" />
-            <element signature="e#2259#2260#0" expanded="true" />
-            <element signature="e#2295#2296#0" expanded="true" />
+            <element signature="e#2320#2321#0" expanded="true" />
+            <element signature="e#2356#2357#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -700,13 +705,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Parser.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="453">
-          <caret line="546" column="58" lean-forward="false" selection-start-line="546" selection-start-column="58" selection-end-line="546" selection-end-column="58" />
+        <state relative-caret-position="391">
+          <caret line="597" column="31" lean-forward="false" selection-start-line="597" selection-start-column="31" selection-end-line="597" selection-end-column="31" />
           <folding>
             <element signature="e#315#323#0" expanded="true" />
             <element signature="e#393#401#0" expanded="true" />
-            <element signature="e#2259#2260#0" expanded="true" />
-            <element signature="e#2295#2296#0" expanded="true" />
+            <element signature="e#2320#2321#0" expanded="true" />
+            <element signature="e#2356#2357#0" expanded="true" />
           </folding>
         </state>
       </provider>
