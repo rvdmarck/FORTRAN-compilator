@@ -82,7 +82,7 @@ class Parser {
     private static void evaluateCond() {
         String e2 = tempStack.pop(), op = tempStack.pop(), e1 = tempStack.pop();
         String newID = "%" + nextVariable();
-        System.out.println("\t\t" + newID + " = icmp " + op + " i1 " + e1 + ", " + e2);
+        System.out.println("\t\t" + newID + " = " + op + " i1 " + e1 + ", " + e2);
         tempStack.push(newID);
     }
 
