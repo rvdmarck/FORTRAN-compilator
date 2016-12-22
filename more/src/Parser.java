@@ -553,6 +553,8 @@ class Parser {
         System.out.println("\t\t" + newID_ + " = icmp eq i32 " + newID__ + "," +  endDO);
         System.out.println("\t\tbr i1 " + newID_ + ", label %end" + newID.substring(1) +", label %continue"+newID.substring(1));
         System.out.println("\tcontinue"+newID.substring(1)+":");
+        String increment = "%" + nextVariable();
+        System.out.println("\t\t" + increment + " = add i32 " + newID + "count, 1");
         matchOrThrow(LexicalUnit.NUMBER, 47);
         matchOrThrow(LexicalUnit.ENDLINE, 47);
         if (matchAny(LexicalUnit.VARNAME, LexicalUnit.DO, LexicalUnit.READ, LexicalUnit.IF, LexicalUnit.PRINT, LexicalUnit.ENDDO, LexicalUnit.LEFT_PARENTHESIS, LexicalUnit.MINUS, LexicalUnit.ELSE, LexicalUnit.END,
@@ -563,7 +565,6 @@ class Parser {
             throw new ParserException(peeked, 47);
         }
         matchOrThrow(LexicalUnit.ENDDO, 47);
-        //System.out.println("\t\tbr label %" + );
         System.out.println("\tend" + newID.substring(1)+":");
     }
 
