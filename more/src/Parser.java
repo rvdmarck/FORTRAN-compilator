@@ -581,6 +581,7 @@ class Parser {
         int symbCount = 0;
         for(String s: tmpPrintSymbolList){
             System.out.println("\t\t%var"+symbCount+" = call i32(i8*,...) @printf(i8* %msg, i32 "+ s +")");
+            symbCount++;
         }
         tmpPrintSymbolList.clear();
     }
