@@ -180,7 +180,7 @@ class Parser {
                 "    %ex = load i32, i32* %res\n" +
                 "    ret i32 %ex\n" +
                 "}");
-        System.out.println("define i32 @main()\n\tentry:\n\t%msg = getelementptr inbounds [4 x i8], [4 x i8]* @formatString, i32 0, i32 0");
+        System.out.println("define i32 @main()\n\tentry:\n\t\t%msg = getelementptr inbounds [4 x i8], [4 x i8]* @formatString, i32 0, i32 0");
         matchOrThrow(LexicalUnit.PROGRAM, 1);
         matchOrThrow(LexicalUnit.VARNAME, 1);
         matchOrThrow(LexicalUnit.ENDLINE, 1);
@@ -333,7 +333,7 @@ class Parser {
             //printRule(21, "ExprArithC", "[VarName]");
             check(s);
             String newID = "%" + nextVariable();
-            System.out.println(newID + " = load i32, i32* %_" + s.getValue());
+            System.out.println("\t\t"+newID + " = load i32, i32* %_" + s.getValue());
             tempStack.push(new Symbol(LexicalUnit.VARNAME, newID));
         } else if (match(LexicalUnit.NUMBER)) {
             //printRule(22, "ExprArithC", "[Number]");
