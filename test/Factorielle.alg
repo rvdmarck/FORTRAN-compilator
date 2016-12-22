@@ -4,8 +4,8 @@ PROGRAM factorielle
 * If the input number is negative, print -1.
   
   INTEGER nombre, resultat, compteur
-  READ*, nombre, resultat
-  resultat = 1+2
+  READ*, nombre
+  resultat = 1
   
   IF (nombre .GE. 0) THEN
     DO compteur = 1, 10
