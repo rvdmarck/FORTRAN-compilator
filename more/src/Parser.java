@@ -14,6 +14,7 @@ class Parser {
     private static int ifID = 0;
     private static Stack<String> tempStack = new Stack<>();
     private static Stack<Integer> ifIdStack = new Stack<>();
+    private static int printCount = 0;
 
 
 
@@ -578,10 +579,9 @@ class Parser {
         matchOrThrow(LexicalUnit.PRINT, 48);
         matchOrThrow(LexicalUnit.COMMA, 48);
         expList();
-        int symbCount = 0;
         for(String s: tmpPrintSymbolList){
-            System.out.println("\t\t%var"+symbCount+" = call i32(i8*,...) @printf(i8* %msg, i32 "+ s +")");
-            symbCount++;
+            System.out.println("\t\t%var"+printCount+" = call i32(i8*,...) @printf(i8* %msg, i32 "+ s +")");
+            printCount++;
         }
         tmpPrintSymbolList.clear();
     }

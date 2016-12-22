@@ -63,8 +63,9 @@ define void @main(){
 		br label %Endif0
 	IfUnequal1:
 		%11 = sub i32 0, 1
-		%var0 = call i32(i8*,...) @printf(i8* %msg, i32 %11)
+		%var1 = call i32(i8*,...) @printf(i8* %msg, i32 %11)
 		br label %Endif0
 	Endif0:
 		ret void
 }
+
