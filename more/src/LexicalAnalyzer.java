@@ -866,27 +866,27 @@ private Symbol symbolBuilder(LexicalUnit unit, Object value){
             }
           case 64: break;
           case 26: 
-            { return symbolBuilder(LexicalUnit.GREATER_EQUAL);
+            { return symbolBuilder(LexicalUnit.GREATER_EQUAL, "sge");
             }
           case 65: break;
           case 27: 
-            { return symbolBuilder(LexicalUnit.GREATER);
+            { return symbolBuilder(LexicalUnit.GREATER, "sgt");
             }
           case 66: break;
           case 28: 
-            { return symbolBuilder(LexicalUnit.EQUAL_COMPARE);
+            { return symbolBuilder(LexicalUnit.EQUAL_COMPARE, "eq");
             }
           case 67: break;
           case 29: 
-            { return symbolBuilder(LexicalUnit.DIFFERENT);
+            { return symbolBuilder(LexicalUnit.DIFFERENT, "ne");
             }
           case 68: break;
           case 30: 
-            { return symbolBuilder(LexicalUnit.SMALLER_EQUAL);
+            { return symbolBuilder(LexicalUnit.SMALLER_EQUAL, "sle");
             }
           case 69: break;
           case 31: 
-            { return symbolBuilder(LexicalUnit.SMALLER);
+            { return symbolBuilder(LexicalUnit.SMALLER, "slt");
             }
           case 70: break;
           case 32: 

@@ -69,6 +69,20 @@ class Parser {
         tempStack.push(newID);
     }
 
+    private static void evaluateComp() {
+        String e2 = tempStack.pop(), op = tempStack.pop(), e1 = tempStack.pop();
+        String newID = "%" + nextVariable();
+        System.out.println("\t\t" + newID + " = icmp " + op + " i32 " + e1 + ", " + e2);
+        tempStack.push(newID);
+    }
+
+    private static void evaluateCond() {
+        String e2 = tempStack.pop(), op = tempStack.pop(), e1 = tempStack.pop();
+        String newID = "%" + nextVariable();
+        System.out.println("\t\t" + newID + " = icmp " + op + " i1 " + e1 + ", " + e2);
+        tempStack.push(newID);
+    }
+
     /**
      * run the Parser
      *
@@ -344,8 +358,8 @@ class Parser {
             matchOrThrow(LexicalUnit.RIGHT_PARENTHESIS, 23);
         } else if (match(LexicalUnit.MINUS)) {
             //printRule(24, "ExprArithC", "- <ExprArithC>");
-            tempStack.push("-1");
-            tempStack.push("mul");
+            tempStack.push("0");
+            tempStack.push("sub");
             exprArithC();
             evaluateArith();
         } else {
@@ -421,7 +435,9 @@ class Parser {
     private void b() throws ParserException, CompilationException {
         if (match(LexicalUnit.OR)) {
            //printRule(33, "B", ".OR. <CondB> <B>");
+            tempStack.push("or");
             condB();
+            evaluateCond();
             b();
         } else if (matchAny(LexicalUnit.RIGHT_PARENTHESIS)) {
            //printRule(34, "B", "\u0395");
@@ -443,7 +459,9 @@ class Parser {
     private void d() throws ParserException, CompilationException {
         if (match(LexicalUnit.AND)) {
            //printRule(36, "D", ".AND. <CondC>");
+            tempStack.push("and");
             condC();
+            evaluateCond();
         } else if (matchAny(LexicalUnit.OR, LexicalUnit.RIGHT_PARENTHESIS)) {
            //printRule(37, "D", "\u0395");
         } else {
@@ -454,10 +472,14 @@ class Parser {
     private void condC() throws ParserException, CompilationException {
         if (match(LexicalUnit.NOT)) {
            //printRule(38, "CondC", ".NOT. <SimpleCond>");
+            tempStack.push("1");
+            tempStack.push("xor");
+            simpleCond();
+            evaluateCond();
         } else {
-           //printRule(39, "CondC", "<SimpleCond>");
+            //printRule(39, "CondC", "<SimpleCond>");
+            simpleCond();
         }
-        simpleCond();
     }
 
     private void simpleCond() throws ParserException, CompilationException {
@@ -465,31 +487,33 @@ class Parser {
         exprArithA();
         comp();
         exprArithA();
+        evaluateComp();
     }
 
     private void comp() throws ParserException, CompilationException {
         switch (peeked.getType()) {
             case EQUAL_COMPARE:
-               //printRule(41, "Comp", ".EQ.");
+                //printRule(41, "Comp", ".EQ.");
                 break;
             case GREATER_EQUAL:
-               //printRule(42, "Comp", ".GE.");
+                //printRule(42, "Comp", ".GE.");
                 break;
             case GREATER:
-               //printRule(43, "Comp", ".GT.");
+                //printRule(43, "Comp", ".GT.");
                 break;
             case SMALLER_EQUAL:
-               //printRule(44, "Comp", ".LE.");
+                //printRule(44, "Comp", ".LE.");
                 break;
             case SMALLER:
-               //printRule(45, "Comp", ".LT.");
+                //printRule(45, "Comp", ".LT.");
                 break;
             case DIFFERENT:
-               //printRule(46, "Comp", ".NE.");
+                //printRule(46, "Comp", ".NE.");
                 break;
             default:
                 throw new ParserException(peeked, 40);
         }
+        tempStack.push((String)peeked.getValue());
         peek();
     }
 
