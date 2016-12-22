@@ -10,7 +10,7 @@ class Parser {
     private static int lastID = 0;
     private static List<Symbol> tmpSymbolList = new ArrayList<Symbol>();
     private static String LLVMFilePath;
-    private static Stack<Symbol> tempStack = new Stack<>();
+    private static Stack<String> tempStack = new Stack<>();
 
 
     /**
@@ -63,10 +63,10 @@ class Parser {
     }
 
     private static void evaluateArith() {
-        String e2 = (String)tempStack.pop().getValue(), op = (String)tempStack.pop().getValue(), e1 = (String)tempStack.pop().getValue();
+        String e2 = tempStack.pop(), op = tempStack.pop(), e1 = tempStack.pop();
         String newID = "%" + nextVariable();
         System.out.println("\t\t" + newID + " = " + op + " i32 " + e1 + ", " + e2);
-        tempStack.push(new Symbol(LexicalUnit.VARNAME, newID));
+        tempStack.push(newID);
     }
 
     /**
@@ -279,8 +279,8 @@ class Parser {
         check(varname);
         matchOrThrow(LexicalUnit.EQUAL, 14);
         exprArithA();
-        Symbol tmp = tempStack.pop();
-        System.out.println("\t\tstore i32 " + tmp.getValue() + ", i32* %_" + varname.getValue());
+        String tmp = tempStack.pop();
+        System.out.println("\t\tstore i32 " + tmp + ", i32* %_" + varname.getValue());
     }
 
     private void exprArithA() throws ParserException, CompilationException {
@@ -334,18 +334,18 @@ class Parser {
             check(s);
             String newID = "%" + nextVariable();
             System.out.println("\t\t" + newID + " = load i32, i32* %_" + s.getValue());
-            tempStack.push(new Symbol(LexicalUnit.VARNAME, newID));
+            tempStack.push(newID);
         } else if (match(LexicalUnit.NUMBER)) {
             //printRule(22, "ExprArithC", "[Number]");
-            tempStack.push(s);
+            tempStack.push((String)s.getValue());
         } else if (match(LexicalUnit.LEFT_PARENTHESIS)) {
             //printRule(23, "ExprArithC", "( <ExprArithA> )");
             exprArithA();
             matchOrThrow(LexicalUnit.RIGHT_PARENTHESIS, 23);
         } else if (match(LexicalUnit.MINUS)) {
-            //printRule(24, "ExprArithC", "- <ExprArithA>");
-            tempStack.push(new Symbol(LexicalUnit.INTEGER, "-1"));
-            tempStack.push(new Symbol(LexicalUnit.TIMES, "mul"));
+            //printRule(24, "ExprArithC", "- <ExprArithC>");
+            tempStack.push("-1");
+            tempStack.push("mul");
             exprArithC();
             evaluateArith();
         } else {
@@ -362,7 +362,7 @@ class Parser {
         } else {
             throw new ParserException(peeked, 16);
         }
-        tempStack.push(op);
+        tempStack.push((String)op.getValue());
     }
 
     private void mulOp() throws ParserException, CompilationException {
@@ -374,7 +374,7 @@ class Parser {
         } else {
             throw new ParserException(peeked, 19);
         }
-        tempStack.push(op);
+        tempStack.push((String)op.getValue());
     }
 
     private void ifrule() throws ParserException, CompilationException {
