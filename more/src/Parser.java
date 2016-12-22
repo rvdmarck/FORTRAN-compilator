@@ -425,7 +425,7 @@ class Parser {
         if (match(LexicalUnit.ENDIF)) {
            //printRule(30, "Else", "ENDIF");
         } else if (match(LexicalUnit.ELSE)) {
-            System.out.println("\t" + "IfUnequal" + ifID + ":");
+            System.out.println("\t" + "Else" + ifIdStack.peek() + ":");
            //printRule(31, "Else", "ELSE [EndLine] <Code> ENDIF");
             matchOrThrow(LexicalUnit.ENDLINE, 31);
             if (matchAny(LexicalUnit.VARNAME, LexicalUnit.DO, LexicalUnit.READ, LexicalUnit.IF, LexicalUnit.PRINT, LexicalUnit.ENDDO, LexicalUnit.LEFT_PARENTHESIS, LexicalUnit.MINUS, LexicalUnit.ELSE, LexicalUnit.END,
