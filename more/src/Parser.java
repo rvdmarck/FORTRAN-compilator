@@ -14,6 +14,7 @@ class Parser {
     private static int ifID = 0;
     private static Stack<String> tempStack = new Stack<>();
     private static Stack<Integer> ifIdStack = new Stack<>();
+    private static boolean debug = false;
 
 
 
@@ -39,6 +40,7 @@ class Parser {
     }
 
     private static void writeLLVM(String content){
+        content += "\n";
         try(BufferedWriter bw = new BufferedWriter(new FileWriter(LLVMFilePath, true))){
             bw.write(content);
         } catch(IOException e) {
@@ -165,7 +167,8 @@ class Parser {
     private void printRule(int n, String left, String right) {
         String nStr = "[" + n + "]";
         left = "<" + left + ">";
-        System.out.println(String.format("%-5s %-15s \u2192 %s", nStr, left, right));
+        if(debug)
+            System.out.println(String.format("%-5s %-15s \u2192 %s", nStr, left, right));
     }
 
     private void program() throws ParserException, CompilationException {
