@@ -48,13 +48,13 @@ define void @main(){
 		%4 = icmp eq i32 %3,10
 		br i1 %4, label %endloop0, label %continueloop0
 	continueloop0:
-		%5 = load i32, i32* %_compteur
-		%6 = add i32 1, %5
-		store i32 %6, i32* %_compteur
-		%7 = load i32, i32* %_resultat
+		%5 = load i32, i32* %_resultat
+		%6 = load i32, i32* %_compteur
+		%7 = mul i32 %5, %6
+		store i32 %7, i32* %_resultat
 		%8 = load i32, i32* %_compteur
-		%9 = mul i32 %7, %8
-		store i32 %9, i32* %_resultat
+		%9 = add i32 1, %8
+		store i32 %9, i32* %_compteur
 		br label %loop0
 	endloop0:
 		%10 = load i32, i32* %_resultat
@@ -67,3 +67,4 @@ define void @main(){
 	Endif0:
 		ret void
 }
+
