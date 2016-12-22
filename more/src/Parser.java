@@ -1,4 +1,4 @@
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,17 +11,45 @@ class Parser {
     private static Map<String, Integer> variables = new HashMap<String, Integer>();
     private static int counter = -1;
     private static int lastID = 0;
-    private List<Symbol> tmpSymbolList = new ArrayList<Symbol>();
+    private static List<Symbol> tmpSymbolList = new ArrayList<Symbol>();
+    private static String LLVMFilePath;
+    private boolean firstWrite = true;
 
 
-    public static void create(Symbol varname) throws CompilationException {
+    /**
+     * Uber-Fortran Parser
+     *
+     * @param la LexicalAnalyzer containing code scan
+     */
+    Parser(LexicalAnalyzer la, String srcFilePath) throws CompilationException {
+        this.la = la;
+        LLVMFilePath = generateLLVMFilePath(srcFilePath);
+    }
+
+    private String generateLLVMFilePath(String srcFilePath){
+        int lastDotIndex = srcFilePath.lastIndexOf(".");
+        String tmpLLVMFilePath = srcFilePath.substring(0, lastDotIndex+1);
+        return tmpLLVMFilePath+"ll";
+    }
+
+    private void writeLLVM(String content){
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(LLVMFilePath, !firstWrite))){
+            bw.write(content);
+            firstWrite = false;
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private static void create(Symbol varname) throws CompilationException {
         final String privateName = "_" + varname.getValue();
         if (variables.containsKey(privateName))
             throw new CompilationException("Already declared " + varname);
         variables.put(privateName, new Integer(++counter));
     }
 
-    public static boolean check(Symbol varname) throws CompilationException {
+    private static boolean check(Symbol varname) throws CompilationException {
         final String privateName = "_" + varname.getValue();
         if (!variables.containsKey(privateName)) {
             throw new CompilationException("Undeclared " + varname.getValue());
@@ -29,17 +57,8 @@ class Parser {
         return true;
     }
 
-    protected static String nextVariable(){
+    private static String nextVariable(){
         return (++lastID)+"";
-    }
-
-    /**
-     * Uber-Fortran Parser
-     *
-     * @param la LexicalAnalyzer containing code scan
-     */
-    Parser(LexicalAnalyzer la) {
-        this.la = la;
     }
 
     /**
@@ -193,8 +212,6 @@ class Parser {
     }
 
     private void followVarlist() throws ParserException, CompilationException {
-        Symbol tmp = peeked;
-        List<Symbol> totalSymbolList = null;
         if (match(LexicalUnit.COMMA)) {
             //printRule(5, "FollowVarList", ", <VarList>");
             varlist();

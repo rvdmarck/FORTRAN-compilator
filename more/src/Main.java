@@ -5,7 +5,7 @@ public class Main {
     public static void main(String[] args) {
         try {
             LexicalAnalyzer la = new LexicalAnalyzer(new FileReader(args[0]));
-            Parser p = new Parser(la);
+            Parser p = new Parser(la, args[0]);
             p.run();
         } catch (IOException e) {
             System.out.println("File Not Found: " + args[0]);
