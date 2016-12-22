@@ -400,10 +400,7 @@ class Parser {
         matchOrThrow(LexicalUnit.IF, 29);
         matchOrThrow(LexicalUnit.LEFT_PARENTHESIS, 29);
         condA();
-        String newID = "%" + nextVariable();
-        System.out.println("\t\t" + newID + " = icmp eq i1 " + tempStack.peek() + ", 1");
-        //System.out.println("\t\t" + newID + " = " + newID + " i32 " + tempStack.get(0).getValue() + ", " + tempStack.get(1).getValue());
-        System.out.println("\t\tbr i1 "+ newID+", label %IfEqual" + ifID + ", label %IfUnequal"+ifID);
+        System.out.println("\t\tbr i1 "+ tempStack.peek() +", label %IfEqual" + ifID + ", label %IfUnequal"+ifID);
         System.out.println("\t" + "IfEqual" + ifID + ":");
         ifID++;
 
@@ -554,17 +551,19 @@ class Parser {
         String newID_ = "%" + nextVariable();
         System.out.println("\t\t" + newID__ + " = load i32, i32* " + newID + "count");
         System.out.println("\t\t" + newID_ + " = icmp eq i32 " + newID__ + "," +  endDO);
-        nextVariable();
-        System.out.println("\t\tbr i1 " + newID_ + ", label %end" + newID.substring(1) +", label "+newID);
+        System.out.println("\t\tbr i1 " + newID_ + ", label %end" + newID.substring(1) +", label %continue"+newID.substring(1));
+        System.out.println("\tcontinue"+newID.substring(1)+":");
         matchOrThrow(LexicalUnit.NUMBER, 47);
         matchOrThrow(LexicalUnit.ENDLINE, 47);
         if (matchAny(LexicalUnit.VARNAME, LexicalUnit.DO, LexicalUnit.READ, LexicalUnit.IF, LexicalUnit.PRINT, LexicalUnit.ENDDO, LexicalUnit.LEFT_PARENTHESIS, LexicalUnit.MINUS, LexicalUnit.ELSE, LexicalUnit.END,
                 LexicalUnit.ENDIF)) {
             code();
+            System.out.println("\t\tbr label "+newID);
         } else {
             throw new ParserException(peeked, 47);
         }
         matchOrThrow(LexicalUnit.ENDDO, 47);
+        //System.out.println("\t\tbr label %" + );
         System.out.println("\tend" + newID.substring(1)+":");
     }
 
