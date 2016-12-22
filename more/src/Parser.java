@@ -343,10 +343,10 @@ class Parser {
             exprArithA();
             matchOrThrow(LexicalUnit.RIGHT_PARENTHESIS, 23);
         } else if (match(LexicalUnit.MINUS)) {
-            //printRule(24, "ExprArithC", "- <ExprArithA>");
+            printRule(24, "ExprArithC", "- <ExprArithA>");
             tempStack.push(new Symbol(LexicalUnit.INTEGER, "-1"));
             tempStack.push(new Symbol(LexicalUnit.TIMES, "mul"));
-            exprArithA();
+            exprArithC();
             evaluateArith();
         } else {
             throw new ParserException(peeked, 18);
