@@ -5,7 +5,7 @@ import java.util.*;
 class Parser {
     private LexicalAnalyzer la;
     private Symbol peeked = null;
-    private static Map<String, Integer> variables = new HashMap<String, Integer>();
+    private static Set<String> variables = new HashSet<>();
     private static int counter = -1;
     private static int lastID = 0;
     private static List<Symbol> tmpSymbolList = new ArrayList<Symbol>();
@@ -45,14 +45,14 @@ class Parser {
 
     private static void create(Symbol varname) throws CompilationException {
         final String privateName = "_" + varname.getValue();
-        if (variables.containsKey(privateName))
+        boolean added = variables.add(privateName);
+        if (!added)
             throw new CompilationException("Already declared " + varname);
-        variables.put(privateName, new Integer(++counter));
     }
 
     private static boolean check(Symbol varname) throws CompilationException {
         final String privateName = "_" + varname.getValue();
-        if (!variables.containsKey(privateName)) {
+        if (!variables.contains(privateName)) {
             throw new CompilationException("Undeclared " + varname.getValue());
         }
         return true;
