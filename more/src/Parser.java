@@ -10,7 +10,7 @@ class Parser {
     private static int lastID = 0;
     private static List<Symbol> tmpSymbolList = new ArrayList<Symbol>();
     private static String LLVMFilePath;
-    private static Stack<String> tempStack = new Stack<>();
+    private static Stack<Symbol> tempStack = new Stack<>();
 
 
     /**
@@ -60,6 +60,13 @@ class Parser {
 
     private static String nextVariable(){
         return (++lastID)+"";
+    }
+
+    private static void evaluateArith() {
+        String e2 = (String)tempStack.pop().getValue(), op = (String)tempStack.pop().getValue(), e1 = (String)tempStack.pop().getValue();
+        String newID = "%" + nextVariable();
+        System.out.println("\t\t" + newID + " = " + op + " i32 " + e1 + ", " + e2);
+        tempStack.push(new Symbol(LexicalUnit.VARNAME, newID));
     }
 
     /**
@@ -225,13 +232,13 @@ class Parser {
 
     private void code() throws ParserException, CompilationException {
         if (matchAny(LexicalUnit.VARNAME, LexicalUnit.DO, LexicalUnit.READ, LexicalUnit.IF, LexicalUnit.PRINT)) {
-            printRule(7, "Code", "<Instruction> [EndLine] <Code>");
+           //printRule(7, "Code", "<Instruction> [EndLine] <Code>");
             instruction();
             matchOrThrow(LexicalUnit.ENDLINE, 7);
             code();
         } else if (matchAny(LexicalUnit.ENDDO, LexicalUnit.LEFT_PARENTHESIS, LexicalUnit.MINUS, LexicalUnit.ELSE, LexicalUnit.END,
                 LexicalUnit.ENDIF)) {
-            printRule(8, "Code", "\u0395");
+           //printRule(8, "Code", "\u0395");
         } else {
             throw new ParserException(peeked, 7);
         }
@@ -240,23 +247,23 @@ class Parser {
     private void instruction() throws ParserException, CompilationException {
         switch (peeked.getType()) {
             case VARNAME:
-                printRule(9, "Instruction", "<Assign>");
+               //printRule(9, "Instruction", "<Assign>");
                 assign();
                 break;
             case IF:
-                printRule(10, "Instruction", "<If>");
+               //printRule(10, "Instruction", "<If>");
                 ifrule();
                 break;
             case DO:
-                printRule(11, "Instruction", "<Do>");
+               //printRule(11, "Instruction", "<Do>");
                 doRule();
                 break;
             case PRINT:
-                printRule(12, "Instruction", "<Print>");
+               //printRule(12, "Instruction", "<Print>");
                 print();
                 break;
             case READ:
-                printRule(13, "Instruction", "<Read>");
+               //printRule(13, "Instruction", "<Read>");
                 read();
                 break;
             default:
@@ -266,32 +273,33 @@ class Parser {
 
 
     private void assign() throws ParserException, CompilationException {
-        printRule(14, "Assign", "[VarName] = <ExprArithA>");
+        //printRule(14, "Assign", "[VarName] = <ExprArithA>");
         Symbol varname = peeked;
         matchOrThrow(LexicalUnit.VARNAME, 14);
         check(varname);
         matchOrThrow(LexicalUnit.EQUAL, 14);
         exprArithA();
-        String tmp = tempStack.pop();
-        System.out.println("\t\tstore i32 %" + tmp + ", i32* %_" + varname.getValue());
+        Symbol tmp = tempStack.pop();
+        System.out.println("\t\tstore i32 " + tmp.getValue() + ", i32* %_" + varname.getValue());
     }
 
     private void exprArithA() throws ParserException, CompilationException {
-        printRule(15, "ExprArithA", "<ExprArithB> <V>");
+       //printRule(15, "ExprArithA", "<ExprArithB> <V>");
         exprArithB();
         v();
     }
 
     private void v() throws ParserException, CompilationException {
         if (matchAny(LexicalUnit.PLUS, LexicalUnit.MINUS)) {
-            printRule(16, "V", "<AddOp> <ExprArithB> <V>");
+           //printRule(16, "V", "<AddOp> <ExprArithB> <V>");
             addOp();
             exprArithB();
+            evaluateArith();
             v();
         } else if (matchAny(LexicalUnit.COMMA, LexicalUnit.EQUAL, LexicalUnit.GREATER_EQUAL, LexicalUnit.GREATER, LexicalUnit.SMALLER_EQUAL,
                 LexicalUnit.DIFFERENT, LexicalUnit.RIGHT_PARENTHESIS, LexicalUnit.TIMES, LexicalUnit.DIVIDE, LexicalUnit.ENDLINE,
                 LexicalUnit.AND, LexicalUnit.OR)) {
-            printRule(17, "V", "\u0395");
+           //printRule(17, "V", "\u0395");
         } else {
             throw new ParserException(peeked, 15);
         }
@@ -305,58 +313,72 @@ class Parser {
 
     private void x() throws ParserException, CompilationException {
         if (matchAny(LexicalUnit.TIMES, LexicalUnit.DIVIDE)) {
-            printRule(19, "X", "<MulOp> <ExprArithC> <X>");
+            //printRule(19, "X", "<MulOp> <ExprArithC> <X>");
             mulOp();
             exprArithC();
+            evaluateArith();
             x();
         } else if (matchAny(LexicalUnit.COMMA, LexicalUnit.EQUAL, LexicalUnit.GREATER_EQUAL, LexicalUnit.GREATER, LexicalUnit.SMALLER_EQUAL,
                 LexicalUnit.DIFFERENT, LexicalUnit.RIGHT_PARENTHESIS, LexicalUnit.ENDLINE, LexicalUnit.AND, LexicalUnit.OR,
                 LexicalUnit.PLUS, LexicalUnit.MINUS)) {
-            printRule(20, "X", "\u0395");
+            //printRule(20, "X", "\u0395");
         } else {
             throw new ParserException(peeked, 18);
         }
     }
 
     private void exprArithC() throws ParserException, CompilationException {
+        Symbol s = peeked;
         if (match(LexicalUnit.VARNAME)) {
-            printRule(21, "ExprArithC", "[VarName]");
+            //printRule(21, "ExprArithC", "[VarName]");
+            check(s);
+            String newID = "%" + nextVariable();
+            System.out.println(newID + " = load i32, i32* %_" + s.getValue());
+            tempStack.push(new Symbol(LexicalUnit.VARNAME, newID));
         } else if (match(LexicalUnit.NUMBER)) {
-            printRule(22, "ExprArithC", "[Number]");
+            //printRule(22, "ExprArithC", "[Number]");
+            tempStack.push(s);
         } else if (match(LexicalUnit.LEFT_PARENTHESIS)) {
-            printRule(23, "ExprArithC", "( <ExprArithA> )");
+            //printRule(23, "ExprArithC", "( <ExprArithA> )");
             exprArithA();
             matchOrThrow(LexicalUnit.RIGHT_PARENTHESIS, 23);
         } else if (match(LexicalUnit.MINUS)) {
-            printRule(24, "ExprArithC", "- <ExprArithA>");
+            //printRule(24, "ExprArithC", "- <ExprArithA>");
+            tempStack.push(new Symbol(LexicalUnit.INTEGER, "-1"));
+            tempStack.push(new Symbol(LexicalUnit.TIMES, "mul"));
             exprArithA();
+            evaluateArith();
         } else {
             throw new ParserException(peeked, 18);
         }
     }
 
     private void addOp() throws ParserException, CompilationException {
+        Symbol op = peeked;
         if (match(LexicalUnit.PLUS)) {
-            printRule(25, "AddOp", "+");
+            //printRule(25, "AddOp", "+");
         } else if (match(LexicalUnit.MINUS)) {
-            printRule(26, "AddOp", "-");
+            //printRule(26, "AddOp", "-");
         } else {
             throw new ParserException(peeked, 16);
         }
+        tempStack.push(op);
     }
 
     private void mulOp() throws ParserException, CompilationException {
+        Symbol op = peeked;
         if (match(LexicalUnit.TIMES)) {
-            printRule(27, "MulOp", "*");
+            //printRule(27, "MulOp", "*");
         } else if (match(LexicalUnit.DIVIDE)) {
-            printRule(28, "MulOp", "/");
+            //printRule(28, "MulOp", "/");
         } else {
             throw new ParserException(peeked, 19);
         }
+        tempStack.push(op);
     }
 
     private void ifrule() throws ParserException, CompilationException {
-        printRule(29, "If", "IF ( <CondA> ) THEN [EndLine] <Code> <IfSeq>");
+       //printRule(29, "If", "IF ( <CondA> ) THEN [EndLine] <Code> <IfSeq>");
         matchOrThrow(LexicalUnit.IF, 29);
         matchOrThrow(LexicalUnit.LEFT_PARENTHESIS, 29);
         condA();
@@ -374,9 +396,9 @@ class Parser {
 
     private void ifSeq() throws ParserException, CompilationException {
         if (match(LexicalUnit.ENDIF)) {
-            printRule(30, "Else", "ENDIF");
+           //printRule(30, "Else", "ENDIF");
         } else if (match(LexicalUnit.ELSE)) {
-            printRule(31, "Else", "ELSE [EndLine] <Code> ENDIF");
+           //printRule(31, "Else", "ELSE [EndLine] <Code> ENDIF");
             matchOrThrow(LexicalUnit.ENDLINE, 31);
             if (matchAny(LexicalUnit.VARNAME, LexicalUnit.DO, LexicalUnit.READ, LexicalUnit.IF, LexicalUnit.PRINT, LexicalUnit.ENDDO, LexicalUnit.LEFT_PARENTHESIS, LexicalUnit.MINUS, LexicalUnit.ELSE, LexicalUnit.END,
                     LexicalUnit.ENDIF)) {
@@ -391,25 +413,25 @@ class Parser {
     }
 
     private void condA() throws ParserException, CompilationException {
-        printRule(32, "CondA", "<CondB> <B>");
+       //printRule(32, "CondA", "<CondB> <B>");
         condB();
         b();
     }
 
     private void b() throws ParserException, CompilationException {
         if (match(LexicalUnit.OR)) {
-            printRule(33, "B", ".OR. <CondB> <B>");
+           //printRule(33, "B", ".OR. <CondB> <B>");
             condB();
             b();
         } else if (matchAny(LexicalUnit.RIGHT_PARENTHESIS)) {
-            printRule(34, "B", "\u0395");
+           //printRule(34, "B", "\u0395");
         } else {
             throw new ParserException(peeked, 32);
         }
     }
 
     private void condB() throws ParserException, CompilationException {
-        printRule(35, "CondB", "<CondC> <D>");
+       //printRule(35, "CondB", "<CondC> <D>");
         if (matchAny(LexicalUnit.NOT, LexicalUnit.VARNAME, LexicalUnit.NUMBER, LexicalUnit.LEFT_PARENTHESIS, LexicalUnit.MINUS)) {
             condC();
         } else {
@@ -420,10 +442,10 @@ class Parser {
 
     private void d() throws ParserException, CompilationException {
         if (match(LexicalUnit.AND)) {
-            printRule(36, "D", ".AND. <CondC>");
+           //printRule(36, "D", ".AND. <CondC>");
             condC();
         } else if (matchAny(LexicalUnit.OR, LexicalUnit.RIGHT_PARENTHESIS)) {
-            printRule(37, "D", "\u0395");
+           //printRule(37, "D", "\u0395");
         } else {
             throw new ParserException(peeked, 35);
         }
@@ -431,15 +453,15 @@ class Parser {
 
     private void condC() throws ParserException, CompilationException {
         if (match(LexicalUnit.NOT)) {
-            printRule(38, "CondC", ".NOT. <SimpleCond>");
+           //printRule(38, "CondC", ".NOT. <SimpleCond>");
         } else {
-            printRule(39, "CondC", "<SimpleCond>");
+           //printRule(39, "CondC", "<SimpleCond>");
         }
         simpleCond();
     }
 
     private void simpleCond() throws ParserException, CompilationException {
-        printRule(40, "SimpleCond", "<ExprArithA> <Comp> <ExprArithA>");
+       //printRule(40, "SimpleCond", "<ExprArithA> <Comp> <ExprArithA>");
         exprArithA();
         comp();
         exprArithA();
@@ -448,22 +470,22 @@ class Parser {
     private void comp() throws ParserException, CompilationException {
         switch (peeked.getType()) {
             case EQUAL_COMPARE:
-                printRule(41, "Comp", ".EQ.");
+               //printRule(41, "Comp", ".EQ.");
                 break;
             case GREATER_EQUAL:
-                printRule(42, "Comp", ".GE.");
+               //printRule(42, "Comp", ".GE.");
                 break;
             case GREATER:
-                printRule(43, "Comp", ".GT.");
+               //printRule(43, "Comp", ".GT.");
                 break;
             case SMALLER_EQUAL:
-                printRule(44, "Comp", ".LE.");
+               //printRule(44, "Comp", ".LE.");
                 break;
             case SMALLER:
-                printRule(45, "Comp", ".LT.");
+               //printRule(45, "Comp", ".LT.");
                 break;
             case DIFFERENT:
-                printRule(46, "Comp", ".NE.");
+               //printRule(46, "Comp", ".NE.");
                 break;
             default:
                 throw new ParserException(peeked, 40);
@@ -472,7 +494,7 @@ class Parser {
     }
 
     private void doRule() throws ParserException, CompilationException {
-        printRule(47, "Do", "DO [VarName] = [Number] , [Number] [EndLine] <Code> ENDDO");
+       //printRule(47, "Do", "DO [VarName] = [Number] , [Number] [EndLine] <Code> ENDDO");
         matchOrThrow(LexicalUnit.DO, 47);
         matchOrThrow(LexicalUnit.VARNAME, 47);
         matchOrThrow(LexicalUnit.EQUAL, 47);
@@ -490,14 +512,14 @@ class Parser {
     }
 
     private void print() throws ParserException, CompilationException {
-        printRule(48, "Print", "PRINT* , <ExpList>");
+       //printRule(48, "Print", "PRINT* , <ExpList>");
         matchOrThrow(LexicalUnit.PRINT, 48);
         matchOrThrow(LexicalUnit.COMMA, 48);
         expList();
     }
 
     private void read() throws ParserException, CompilationException {
-        printRule(49, "Read", "READ* , <VarList>");
+       //printRule(49, "Read", "READ* , <VarList>");
 
         matchOrThrow(LexicalUnit.READ, 49);
         matchOrThrow(LexicalUnit.COMMA, 49);
@@ -513,17 +535,17 @@ class Parser {
     }
 
     private void expList() throws ParserException, CompilationException {
-        printRule(50, "ExpList", "<ExprArithA> <FollowExpList>");
+       //printRule(50, "ExpList", "<ExprArithA> <FollowExpList>");
         exprArithA();
         followExplist();
     }
 
     private void followExplist() throws ParserException, CompilationException {
         if (match(LexicalUnit.COMMA)) {
-            printRule(51, "FollowExpList", ", <ExpList>");
+           //printRule(51, "FollowExpList", ", <ExpList>");
             expList();
         } else if (matchAny(LexicalUnit.ENDLINE)) {
-            printRule(52, "FollowExpList", "\u0395");
+           //printRule(52, "FollowExpList", "\u0395");
         } else {
             throw new ParserException(peeked, 50);
         }

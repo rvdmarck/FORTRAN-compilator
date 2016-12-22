@@ -785,7 +785,7 @@ private Symbol symbolBuilder(LexicalUnit unit, Object value){
             }
           case 44: break;
           case 6: 
-            { return symbolBuilder(LexicalUnit.NUMBER, new Integer(yytext()));
+            { return symbolBuilder(LexicalUnit.NUMBER);
             }
           case 45: break;
           case 7: 
@@ -793,7 +793,7 @@ private Symbol symbolBuilder(LexicalUnit unit, Object value){
             }
           case 46: break;
           case 8: 
-            { return symbolBuilder(LexicalUnit.TIMES);
+            { return symbolBuilder(LexicalUnit.TIMES, "mul");
             }
           case 47: break;
           case 9: 
@@ -817,15 +817,15 @@ private Symbol symbolBuilder(LexicalUnit unit, Object value){
             }
           case 52: break;
           case 14: 
-            { return symbolBuilder(LexicalUnit.MINUS);
+            { return symbolBuilder(LexicalUnit.MINUS, "sub");
             }
           case 53: break;
           case 15: 
-            { return symbolBuilder(LexicalUnit.PLUS);
+            { return symbolBuilder(LexicalUnit.PLUS, "add");
             }
           case 54: break;
           case 16: 
-            { return symbolBuilder(LexicalUnit.DIVIDE);
+            { return symbolBuilder(LexicalUnit.DIVIDE, "sdiv");
             }
           case 55: break;
           case 17: 

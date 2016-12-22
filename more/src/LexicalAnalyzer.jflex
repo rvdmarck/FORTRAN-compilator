@@ -78,11 +78,11 @@ whitespace = [ \t]
   "=" {return symbolBuilder(LexicalUnit.EQUAL);}
   "(" {return symbolBuilder(LexicalUnit.LEFT_PARENTHESIS);}
   ")" {return symbolBuilder(LexicalUnit.RIGHT_PARENTHESIS);}
-  "-" {return symbolBuilder(LexicalUnit.MINUS);}
-  "+" {return symbolBuilder(LexicalUnit.PLUS);}
-  "*" {return symbolBuilder(LexicalUnit.TIMES);}
-  "/" {return symbolBuilder(LexicalUnit.DIVIDE);}
-  {number} {return symbolBuilder(LexicalUnit.NUMBER, new Integer(yytext()));}
+  "-" {return symbolBuilder(LexicalUnit.MINUS, "sub");}
+  "+" {return symbolBuilder(LexicalUnit.PLUS, "add");}
+  "*" {return symbolBuilder(LexicalUnit.TIMES, "mul");}
+  "/" {return symbolBuilder(LexicalUnit.DIVIDE, "sdiv");}
+  {number} {return symbolBuilder(LexicalUnit.NUMBER);}
   {identifier} {return symbolBuilder(LexicalUnit.VARNAME);}
   {whitespace} {}
   . {System.out.println("TOKEN NOT RECOGNIZED: " + yytext());}
