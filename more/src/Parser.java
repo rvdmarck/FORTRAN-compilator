@@ -198,7 +198,7 @@ class Parser {
             tmpSymbolList.clear();
             matchOrThrow(LexicalUnit.ENDLINE, 2);
         } else if (matchAny(LexicalUnit.VARNAME, LexicalUnit.DO, LexicalUnit.READ, LexicalUnit.IF, LexicalUnit.PRINT)) {
-            printRule(3, "Vars", "\u0395");
+            //printRule(3, "Vars", "\u0395");
         } else {
             throw new ParserException(peeked, 1);
         }
@@ -267,9 +267,13 @@ class Parser {
 
     private void assign() throws ParserException, CompilationException {
         printRule(14, "Assign", "[VarName] = <ExprArithA>");
+        Symbol varname = peeked;
         matchOrThrow(LexicalUnit.VARNAME, 14);
+        check(varname);
         matchOrThrow(LexicalUnit.EQUAL, 14);
         exprArithA();
+        String tmp = tempStack.pop();
+        System.out.println("\t\tstore i32 %" + tmp + ", i32* %_" + varname.getValue());
     }
 
     private void exprArithA() throws ParserException, CompilationException {
