@@ -66,7 +66,7 @@ whitespace = [ \t]
   read\* {return symbolBuilder(LexicalUnit.READ);}
   print\* {return symbolBuilder(LexicalUnit.PRINT);}
   \.not\. {return symbolBuilder(LexicalUnit.NOT);}
-  \.an\. {return symbolBuilder(LexicalUnit.AND);}
+  \.and\. {return symbolBuilder(LexicalUnit.AND);}
   \.or\. {return symbolBuilder(LexicalUnit.OR);}
   \.eq\. {return symbolBuilder(LexicalUnit.EQUAL_COMPARE);}
   \.ge\. {return symbolBuilder(LexicalUnit.GREATER_EQUAL);}
