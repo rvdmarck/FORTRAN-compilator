@@ -197,7 +197,7 @@ class Parser {
                 "\t\t%ex = load i32, i32* %res\n" +
                 "\t\tret i32 %ex\n" +
                 "}");
-        System.out.println("define i32 @main(){\n\tentry:\n\t\t%msg = getelementptr inbounds [4 x i8], [4 x i8]* @formatString, i32 0, i32 0");
+        System.out.println("define void @main(){\n\tentry:\n\t\t%msg = getelementptr inbounds [4 x i8], [4 x i8]* @formatString, i32 0, i32 0");
         matchOrThrow(LexicalUnit.PROGRAM, 1);
         matchOrThrow(LexicalUnit.VARNAME, 1);
         matchOrThrow(LexicalUnit.ENDLINE, 1);
@@ -400,6 +400,14 @@ class Parser {
         matchOrThrow(LexicalUnit.IF, 29);
         matchOrThrow(LexicalUnit.LEFT_PARENTHESIS, 29);
         condA();
+        String newID = "%" + nextVariable();
+        System.out.println("\t\t" + newID + " = icmp eq i1 " + tempStack.peek() + ", 1");
+        //System.out.println("\t\t" + newID + " = " + newID + " i32 " + tempStack.get(0).getValue() + ", " + tempStack.get(1).getValue());
+        System.out.println("\t\tbr i1 "+ newID+", label %IfEqual" + ifID + ", label %IfUnequal"+ifID);
+        System.out.println("\t" + "IfEqual" + ifID + ":");
+        ifID++;
+
+
         matchOrThrow(LexicalUnit.RIGHT_PARENTHESIS, 29);
         matchOrThrow(LexicalUnit.THEN, 29);
         matchOrThrow(LexicalUnit.ENDLINE, 29);
@@ -496,7 +504,6 @@ class Parser {
         exprArithA();
 
         evaluateComp();
-
     }
 
     private void comp() throws ParserException, CompilationException {
