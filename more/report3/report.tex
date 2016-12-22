@@ -1,0 +1,88 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{fancyhdr} % Required for custom headers
+\usepackage{lastpage} % Required to determine the last page for the footer
+\usepackage{extramarks} % Required for headers and footers
+\usepackage{graphicx}
+\usepackage{rotating}
+\usepackage{caption}
+\usepackage{amsmath}
+
+
+\lstset {
+    basicstyle=\footnotesize,      % font size
+    numbers=left,                  % where to put line numbers
+    numberstyle=\footnotesize,     % numbers size
+    numbersep=5pt,                 % how far the line numbers are from the code
+    backgroundcolor=\color{white}, % background color
+    showspaces=false,                          % show spaces (with underscores)
+    showstringspaces=false,            % underline spaces within strings
+    showtabs=false,                            % show tabs using underscores
+    frame=single,                  % adds a frame around the code
+    tabsize=4,                     % default tabsize
+    breaklines=true,                  % automatic line breaking
+    columns=fullflexible,
+    breakautoindent=false,
+    framerule=1pt,
+    xleftmargin=0pt,
+    xrightmargin=0pt,
+    breakindent=0pt,
+    resetmargins=true
+}
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+% Margins
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+% Set up the header and footer
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName} % Top left header
+\chead{\hspace{1cm}\hmwkClass} % Top center head
+\rhead{\firstxmark} % Top right header
+\lfoot{\lastxmark} % Bottom left footer
+\cfoot{} % Bottom center footer
+\rfoot{Page\ \thepage\ of\ \protect\pageref{LastPage}} % Bottom right footer
+\renewcommand\headrulewidth{0.4pt} % Size of the header rule
+\renewcommand\footrulewidth{0.4pt} % Size of the footer rule
+
+%----------------------------------------------------------------------------------------
+%	NAME AND CLASS SECTION
+%----------------------------------------------------------------------------------------
+\newcommand{\hmwkTitle}{Project - Part2 : Report} % Assignment title
+\newcommand{\hmwkClass}{INFO-F-403} % Course/class
+\newcommand{\hmwkAuthorName}{Anthony Caccia, Rapha\"{e}l Vander Marcken} % Your name
+
+
+\begin{document}
+%----------------------------------------------------------------------------------------
+% TITLE PAGE
+%----------------------------------------------------------------------------------------
+\begin{titlepage}
+\begin{center}
+\textbf{\textsc{UNIVERSIT\'E LIBRE DE BRUXELLES}}\\
+\textbf{\textsc{Faculty of Sciences}}\\
+\textbf{\textsc{Computer Science Department}}
+\vfill{}
+\begin{center}{\Huge \hmwkClass\\ \LARGE Introduction to language theory and compiling\\Project - Part 3 : Report}\end{center}{\Huge \par}
+\begin{center}{\Large Anthony Caccia\\Raphaël Vander Marcken}\end{center}{\Huge \par}
+\vfill{}
+\vfill{}
+\textbf{Academic Year 2016~-~2017}
+\end{center}
+\end{titlepage}
+
+
+
+
+\end{document}
