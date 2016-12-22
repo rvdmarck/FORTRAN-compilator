@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2e156046-ab29-4a34-aee9-f66c5e11de11" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../test/CondTest.alg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/LexicalAnalyzer.java" afterPath="$PROJECT_DIR$/LexicalAnalyzer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/LexicalAnalyzer.jflex" afterPath="$PROJECT_DIR$/LexicalAnalyzer.jflex" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Parser.java" afterPath="$PROJECT_DIR$/Parser.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../test/ArithTest.alg" afterPath="$PROJECT_DIR$/../../test/ArithTest.alg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../test/Factorielle.alg" afterPath="$PROJECT_DIR$/../../test/Factorielle.alg" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -25,13 +21,13 @@
       <file leaf-file-name="Parser.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Parser.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="391">
-              <caret line="597" column="31" lean-forward="false" selection-start-line="597" selection-start-column="31" selection-end-line="597" selection-end-column="31" />
+            <state relative-caret-position="144">
+              <caret line="9" column="72" lean-forward="true" selection-start-line="9" selection-start-column="72" selection-end-line="9" selection-end-column="72" />
               <folding>
-                <element signature="e#315#323#0" expanded="true" />
-                <element signature="e#393#401#0" expanded="true" />
-                <element signature="e#2320#2321#0" expanded="true" />
-                <element signature="e#2356#2357#0" expanded="true" />
+                <element signature="e#278#286#0" expanded="true" />
+                <element signature="e#356#364#0" expanded="true" />
+                <element signature="e#2181#2182#0" expanded="true" />
+                <element signature="e#2217#2218#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -567,12 +563,12 @@
       <option name="presentableId" value="Default" />
       <updated>1482368765716</updated>
       <workItem from="1482368771429" duration="6510000" />
-      <workItem from="1482412140925" duration="24304000" />
+      <workItem from="1482412140925" duration="24631000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="30814000" />
+    <option name="totallyTimeSpent" value="31141000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="24" width="1855" height="951" extended-state="6" />
@@ -624,10 +620,10 @@
         <state relative-caret-position="5724">
           <caret line="318" column="44" lean-forward="false" selection-start-line="318" selection-start-column="44" selection-end-line="318" selection-end-column="44" />
           <folding>
-            <element signature="e#315#323#0" expanded="true" />
-            <element signature="e#393#401#0" expanded="true" />
-            <element signature="e#2320#2321#0" expanded="true" />
-            <element signature="e#2356#2357#0" expanded="true" />
+            <element signature="e#278#286#0" expanded="true" />
+            <element signature="e#356#364#0" expanded="true" />
+            <element signature="e#2181#2182#0" expanded="true" />
+            <element signature="e#2217#2218#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -705,13 +701,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Parser.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="597" column="31" lean-forward="false" selection-start-line="597" selection-start-column="31" selection-end-line="597" selection-end-column="31" />
+        <state relative-caret-position="144">
+          <caret line="9" column="72" lean-forward="true" selection-start-line="9" selection-start-column="72" selection-end-line="9" selection-end-column="72" />
           <folding>
-            <element signature="e#315#323#0" expanded="true" />
-            <element signature="e#393#401#0" expanded="true" />
-            <element signature="e#2320#2321#0" expanded="true" />
-            <element signature="e#2356#2357#0" expanded="true" />
+            <element signature="e#278#286#0" expanded="true" />
+            <element signature="e#356#364#0" expanded="true" />
+            <element signature="e#2181#2182#0" expanded="true" />
+            <element signature="e#2217#2218#0" expanded="true" />
           </folding>
         </state>
       </provider>

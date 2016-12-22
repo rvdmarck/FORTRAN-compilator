@@ -6,13 +6,10 @@ class Parser {
     private LexicalAnalyzer la;
     private Symbol peeked = null;
     private static Set<String> variables = new HashSet<>();
-    private static int counter = -1;
     private static int lastID = -1;
     private static List<Symbol> tmpSymbolList = new ArrayList<Symbol>();
-    private static List<Symbol> tmpPrintSymbolList = new ArrayList<Symbol>();
+    private static List<String> tmpPrintSymbolList = new ArrayList<String>();
     private static String LLVMFilePath;
-    private static Stack<Symbol> tempStack = new Stack<>();
-    private static String tmpComp = null;
     private static int loopID = 0;
     private static int ifID = 0;
     private static Stack<String> tempStack = new Stack<>();
@@ -570,8 +567,8 @@ class Parser {
         matchOrThrow(LexicalUnit.COMMA, 48);
         expList();
         int symbCount = 0;
-        for(Symbol s: tmpPrintSymbolList){
-            System.out.println("\t\t%var"+symbCount+" = call i32(i8,...) @printf(i8* %msg, i32 "+s.getValue()+")");
+        for(String s: tmpPrintSymbolList){
+            System.out.println("\t\t%var"+symbCount+" = call i32(i8,...) @printf(i8* %msg, i32 "+ s +")");
         }
         tmpPrintSymbolList.clear();
     }
