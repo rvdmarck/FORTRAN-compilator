@@ -7,10 +7,14 @@ class Parser {
     private Symbol peeked = null;
     private static Set<String> variables = new HashSet<>();
     private static int counter = -1;
-    private static int lastID = 0;
+    private static int lastID = -1;
     private static List<Symbol> tmpSymbolList = new ArrayList<Symbol>();
+    private static List<Symbol> tmpPrintSymbolList = new ArrayList<Symbol>();
     private static String LLVMFilePath;
     private static Stack<Symbol> tempStack = new Stack<>();
+    private static String tmpComp = null;
+    private static int loopID = 0;
+    private static int ifID = 0;
 
 
     /**
@@ -180,7 +184,7 @@ class Parser {
                 "    %ex = load i32, i32* %res\n" +
                 "    ret i32 %ex\n" +
                 "}");
-        System.out.println("define i32 @main()\n\tentry:\n\t\t%msg = getelementptr inbounds [4 x i8], [4 x i8]* @formatString, i32 0, i32 0");
+        System.out.println("define i32 @main(){\n\tentry:\n\t\t%msg = getelementptr inbounds [4 x i8], [4 x i8]* @formatString, i32 0, i32 0");
         matchOrThrow(LexicalUnit.PROGRAM, 1);
         matchOrThrow(LexicalUnit.VARNAME, 1);
         matchOrThrow(LexicalUnit.ENDLINE, 1);
@@ -192,6 +196,7 @@ class Parser {
             throw new ParserException(peeked, 1);
         }
         matchOrThrow(LexicalUnit.END, 1);
+        System.out.println("\tret void\n}");
     }
 
     private void vars() throws ParserException, CompilationException {
@@ -343,7 +348,7 @@ class Parser {
             exprArithA();
             matchOrThrow(LexicalUnit.RIGHT_PARENTHESIS, 23);
         } else if (match(LexicalUnit.MINUS)) {
-            printRule(24, "ExprArithC", "- <ExprArithA>");
+            //printRule(24, "ExprArithC", "- <ExprArithA>");
             tempStack.push(new Symbol(LexicalUnit.INTEGER, "-1"));
             tempStack.push(new Symbol(LexicalUnit.TIMES, "mul"));
             exprArithC();
@@ -398,6 +403,9 @@ class Parser {
         if (match(LexicalUnit.ENDIF)) {
            //printRule(30, "Else", "ENDIF");
         } else if (match(LexicalUnit.ELSE)) {
+            ifID--;
+            System.out.println("\t" + "IfUnequal" + ifID + ":");
+            ifID++;
            //printRule(31, "Else", "ELSE [EndLine] <Code> ENDIF");
             matchOrThrow(LexicalUnit.ENDLINE, 31);
             if (matchAny(LexicalUnit.VARNAME, LexicalUnit.DO, LexicalUnit.READ, LexicalUnit.IF, LexicalUnit.PRINT, LexicalUnit.ENDDO, LexicalUnit.LEFT_PARENTHESIS, LexicalUnit.MINUS, LexicalUnit.ELSE, LexicalUnit.END,
@@ -465,26 +473,37 @@ class Parser {
         exprArithA();
         comp();
         exprArithA();
+        String newID = "%cond";
+        System.out.println("\t\t" + newID + " = " + tmpComp + " i32 " + tempStack.get(0).getValue() + ", " + tempStack.get(1).getValue());
+        System.out.println("\t\tbr i1 "+ newID+", label %IfEqual" + ifID + ", label %IfUnequal"+ifID);
+        System.out.println("\t" + "IfEqual" + ifID + ":");
+        ifID++;
     }
 
     private void comp() throws ParserException, CompilationException {
         switch (peeked.getType()) {
             case EQUAL_COMPARE:
                //printRule(41, "Comp", ".EQ.");
+                tmpComp = "icmp eq";
                 break;
             case GREATER_EQUAL:
+                tmpComp = "icmp sge";
                //printRule(42, "Comp", ".GE.");
                 break;
             case GREATER:
+                tmpComp = "icmp sgt";
                //printRule(43, "Comp", ".GT.");
                 break;
             case SMALLER_EQUAL:
+                tmpComp = "icmp sle";
                //printRule(44, "Comp", ".LE.");
                 break;
             case SMALLER:
+                tmpComp = "icmp slt";
                //printRule(45, "Comp", ".LT.");
                 break;
             case DIFFERENT:
+                tmpComp = "icmp ne";
                //printRule(46, "Comp", ".NE.");
                 break;
             default:
@@ -498,8 +517,24 @@ class Parser {
         matchOrThrow(LexicalUnit.DO, 47);
         matchOrThrow(LexicalUnit.VARNAME, 47);
         matchOrThrow(LexicalUnit.EQUAL, 47);
+
+        int startDO = Integer.parseInt((String)peeked.getValue());
+        String newID = "%loop" + loopID;
+        loopID++;
+        System.out.println("\t\t" + newID + "count = alloca i32");
+        System.out.println("\t\tstore i32 " + startDO + ", i32* " + newID + "count");
+        System.out.println("\t\tbr label "+ newID);
+        System.out.println("\t" + newID.substring(1)+":");
+
         matchOrThrow(LexicalUnit.NUMBER, 47);
         matchOrThrow(LexicalUnit.COMMA, 47);
+        int endDO = Integer.parseInt((String)peeked.getValue());
+        String newID__ = "%" + nextVariable();
+        String newID_ = "%" + nextVariable();
+        System.out.println("\t\t" + newID__ + " = load i32, i32* " + newID + "count");
+        System.out.println("\t\t" + newID_ + " = icmp eq i32 " + newID__ + "," +  endDO);
+        nextVariable();
+        System.out.println("\t\tbr i1 " + newID_ + ", label %end" + newID.substring(1) +", label "+newID);
         matchOrThrow(LexicalUnit.NUMBER, 47);
         matchOrThrow(LexicalUnit.ENDLINE, 47);
         if (matchAny(LexicalUnit.VARNAME, LexicalUnit.DO, LexicalUnit.READ, LexicalUnit.IF, LexicalUnit.PRINT, LexicalUnit.ENDDO, LexicalUnit.LEFT_PARENTHESIS, LexicalUnit.MINUS, LexicalUnit.ELSE, LexicalUnit.END,
@@ -509,6 +544,7 @@ class Parser {
             throw new ParserException(peeked, 47);
         }
         matchOrThrow(LexicalUnit.ENDDO, 47);
+        System.out.println("\tend" + newID.substring(1)+":");
     }
 
     private void print() throws ParserException, CompilationException {
@@ -516,6 +552,11 @@ class Parser {
         matchOrThrow(LexicalUnit.PRINT, 48);
         matchOrThrow(LexicalUnit.COMMA, 48);
         expList();
+        int symbCount = 0;
+        for(Symbol s: tmpPrintSymbolList){
+            System.out.println("\t\t%var"+symbCount+" = call i32(i8,...) @printf(i8* %msg, i32 "+s.getValue()+")");
+        }
+        tmpPrintSymbolList.clear();
     }
 
     private void read() throws ParserException, CompilationException {
@@ -527,7 +568,7 @@ class Parser {
         for(Symbol s: tmpSymbolList){
             String tmp = nextVariable();
             if(check(s)) {
-                System.out.println("\t\t%" + tmp + "= call i32 readInt()" +
+                System.out.println("\t\t%" + tmp + "= call i32 @readInt()" +
                         "\n\t\tstore i32 %" + tmp + ", i32* %_" + s.getValue());
             }
         }
@@ -537,6 +578,7 @@ class Parser {
     private void expList() throws ParserException, CompilationException {
        //printRule(50, "ExpList", "<ExprArithA> <FollowExpList>");
         exprArithA();
+        tmpPrintSymbolList.add(tempStack.peek());
         followExplist();
     }
 
