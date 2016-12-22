@@ -38,7 +38,7 @@ class Parser {
         return tmpLLVMFilePath+"ll";
     }
 
-    private void writeLLVM(String content){
+    private static void writeLLVM(String content){
         try(BufferedWriter bw = new BufferedWriter(new FileWriter(LLVMFilePath, true))){
             bw.write(content);
         } catch(IOException e) {
@@ -69,21 +69,21 @@ class Parser {
     private static void evaluateArith() {
         String e2 = tempStack.pop(), op = tempStack.pop(), e1 = tempStack.pop();
         String newID = "%" + nextVariable();
-        System.out.println("\t\t" + newID + " = " + op + " i32 " + e1 + ", " + e2);
+        writeLLVM("\t\t" + newID + " = " + op + " i32 " + e1 + ", " + e2);
         tempStack.push(newID);
     }
 
     private static void evaluateComp() {
         String e2 = tempStack.pop(), op = tempStack.pop(), e1 = tempStack.pop();
         String newID = "%" + nextVariable();
-        System.out.println("\t\t" + newID + " = icmp " + op + " i32 " + e1 + ", " + e2);
+        writeLLVM("\t\t" + newID + " = icmp " + op + " i32 " + e1 + ", " + e2);
         tempStack.push(newID);
     }
 
     private static void evaluateCond() {
         String e2 = tempStack.pop(), op = tempStack.pop(), e1 = tempStack.pop();
         String newID = "%" + nextVariable();
-        System.out.println("\t\t" + newID + " = " + op + " i1 " + e1 + ", " + e2);
+        writeLLVM("\t\t" + newID + " = " + op + " i1 " + e1 + ", " + e2);
         tempStack.push(newID);
     }
 
@@ -170,8 +170,8 @@ class Parser {
 
     private void program() throws ParserException, CompilationException {
         //printRule(1, "Program", "PROGRAM [ProgName] [EndLine] <Vars> <Code> END");
-        System.out.println("@formatString = constant [4 x i8] c\"%d\\0A\\00\"\ndeclare i32 @getchar()\ndeclare i32 @printf(i8*,...)");
-        System.out.println("define i32 @readInt(){\n" +
+        writeLLVM("@formatString = constant [4 x i8] c\"%d\\0A\\00\"\ndeclare i32 @getchar()\ndeclare i32 @printf(i8*,...)");
+        writeLLVM("define i32 @readInt(){\n" +
                 "\tentry:\n" +
                 "\t\t%msg = getelementptr inbounds [4 x i8], [4 x i8]* @formatString, i32 0, i32 0\n" +
                 "\t\t%res = alloca i32\n" +
@@ -198,7 +198,7 @@ class Parser {
                 "\t\t%ex = load i32, i32* %res\n" +
                 "\t\tret i32 %ex\n" +
                 "}");
-        System.out.println("define void @main(){\n\tentry:\n\t\t%msg = getelementptr inbounds [4 x i8], [4 x i8]* @formatString, i32 0, i32 0");
+        writeLLVM("define void @main(){\n\tentry:\n\t\t%msg = getelementptr inbounds [4 x i8], [4 x i8]* @formatString, i32 0, i32 0");
         matchOrThrow(LexicalUnit.PROGRAM, 1);
         matchOrThrow(LexicalUnit.VARNAME, 1);
         matchOrThrow(LexicalUnit.ENDLINE, 1);
@@ -210,7 +210,7 @@ class Parser {
             throw new ParserException(peeked, 1);
         }
         matchOrThrow(LexicalUnit.END, 1);
-        System.out.println("\t\tret void\n}");
+        writeLLVM("\t\tret void\n}");
     }
 
     private void vars() throws ParserException, CompilationException {
@@ -219,7 +219,7 @@ class Parser {
             varlist();
             for(Symbol s: tmpSymbolList){
                 create(s);
-                System.out.println("\t\t%_" + s.getValue() + " = alloca i32");
+                writeLLVM("\t\t%_" + s.getValue() + " = alloca i32");
             }
             tmpSymbolList.clear();
             matchOrThrow(LexicalUnit.ENDLINE, 2);
@@ -299,7 +299,7 @@ class Parser {
         matchOrThrow(LexicalUnit.EQUAL, 14);
         exprArithA();
         String tmp = tempStack.pop();
-        System.out.println("\t\tstore i32 " + tmp + ", i32* %_" + varname.getValue());
+        writeLLVM("\t\tstore i32 " + tmp + ", i32* %_" + varname.getValue());
     }
 
     private void exprArithA() throws ParserException, CompilationException {
@@ -352,7 +352,7 @@ class Parser {
             //printRule(21, "ExprArithC", "[VarName]");
             check(s);
             String newID = "%" + nextVariable();
-            System.out.println("\t\t" + newID + " = load i32, i32* %_" + s.getValue());
+            writeLLVM("\t\t" + newID + " = load i32, i32* %_" + s.getValue());
             tempStack.push(newID);
         } else if (match(LexicalUnit.NUMBER)) {
             //printRule(22, "ExprArithC", "[Number]");
@@ -402,8 +402,8 @@ class Parser {
         ifIdStack.push(ifID++);
         matchOrThrow(LexicalUnit.LEFT_PARENTHESIS, 29);
         condA();
-        System.out.println("\t\tbr i1 "+ tempStack.peek() +", label %If" + ifIdStack.peek() + ", label %Else" + ifIdStack.peek());
-        System.out.println("\t" + "If" + ifIdStack.peek() + ":");
+        writeLLVM("\t\tbr i1 "+ tempStack.peek() +", label %If" + ifIdStack.peek() + ", label %Else" + ifIdStack.peek());
+        writeLLVM("\t" + "If" + ifIdStack.peek() + ":");
 
         matchOrThrow(LexicalUnit.RIGHT_PARENTHESIS, 29);
         matchOrThrow(LexicalUnit.THEN, 29);
@@ -411,12 +411,12 @@ class Parser {
         if (matchAny(LexicalUnit.VARNAME, LexicalUnit.DO, LexicalUnit.READ, LexicalUnit.IF, LexicalUnit.PRINT, LexicalUnit.ENDDO, LexicalUnit.LEFT_PARENTHESIS, LexicalUnit.MINUS, LexicalUnit.ELSE, LexicalUnit.END,
                 LexicalUnit.ENDIF)) {
             code();
-            System.out.println("\t\tbr label %Endif" + ifIdStack.peek());
+            writeLLVM("\t\tbr label %Endif" + ifIdStack.peek());
         } else {
             throw new ParserException(peeked, 29);
         }
         ifSeq();
-        System.out.println("\tEndif" + ifIdStack.peek() + ":");
+        writeLLVM("\tEndif" + ifIdStack.peek() + ":");
         ifIdStack.pop();
     }
 
@@ -424,13 +424,13 @@ class Parser {
         if (match(LexicalUnit.ENDIF)) {
            //printRule(30, "Else", "ENDIF");
         } else if (match(LexicalUnit.ELSE)) {
-            System.out.println("\t" + "Else" + ifIdStack.peek() + ":");
+            writeLLVM("\t" + "Else" + ifIdStack.peek() + ":");
            //printRule(31, "Else", "ELSE [EndLine] <Code> ENDIF");
             matchOrThrow(LexicalUnit.ENDLINE, 31);
             if (matchAny(LexicalUnit.VARNAME, LexicalUnit.DO, LexicalUnit.READ, LexicalUnit.IF, LexicalUnit.PRINT, LexicalUnit.ENDDO, LexicalUnit.LEFT_PARENTHESIS, LexicalUnit.MINUS, LexicalUnit.ELSE, LexicalUnit.END,
                     LexicalUnit.ENDIF)) {
                 code();
-                System.out.println("\t\tbr label %Endif" + ifIdStack.peek());
+                writeLLVM("\t\tbr label %Endif" + ifIdStack.peek());
             } else {
                 throw new ParserException(peeked, 31);
             }
@@ -543,19 +543,19 @@ class Parser {
         int startDO = Integer.parseInt((String)peeked.getValue());
         String newID = "%loop" + loopID;
         loopID++;
-        System.out.println("\t\tstore i32 " + startDO + ", i32* " + counter );
-        System.out.println("\t\tbr label "+ newID);
-        System.out.println("\t" + newID.substring(1)+":");
+        writeLLVM("\t\tstore i32 " + startDO + ", i32* " + counter );
+        writeLLVM("\t\tbr label "+ newID);
+        writeLLVM("\t" + newID.substring(1)+":");
 
         matchOrThrow(LexicalUnit.NUMBER, 47);
         matchOrThrow(LexicalUnit.COMMA, 47);
         int endDO = Integer.parseInt((String)peeked.getValue());
         String newID__ = "%" + nextVariable();
         String newID_ = "%" + nextVariable();
-        System.out.println("\t\t" + newID__ + " = load i32, i32* " + counter);
-        System.out.println("\t\t" + newID_ + " = icmp eq i32 " + newID__ + "," +  endDO);
-        System.out.println("\t\tbr i1 " + newID_ + ", label %end" + newID.substring(1) +", label %continue"+newID.substring(1));
-        System.out.println("\tcontinue"+newID.substring(1)+":");
+        writeLLVM("\t\t" + newID__ + " = load i32, i32* " + counter);
+        writeLLVM("\t\t" + newID_ + " = icmp eq i32 " + newID__ + "," +  endDO);
+        writeLLVM("\t\tbr i1 " + newID_ + ", label %end" + newID.substring(1) +", label %continue"+newID.substring(1));
+        writeLLVM("\tcontinue"+newID.substring(1)+":");
 
 
         matchOrThrow(LexicalUnit.NUMBER, 47);
@@ -564,16 +564,16 @@ class Parser {
                 LexicalUnit.ENDIF)) {
             code();
             String increment = "%" + nextVariable();
-            System.out.println("\t\t" + increment + " = load i32, i32* " + counter);
+            writeLLVM("\t\t" + increment + " = load i32, i32* " + counter);
             String increment2 = "%" + nextVariable();
-            System.out.println("\t\t" + increment2 + " = add i32 1, " + increment);
-            System.out.println("\t\tstore i32 " + increment2 + ", i32* " + counter);
-            System.out.println("\t\tbr label "+newID);
+            writeLLVM("\t\t" + increment2 + " = add i32 1, " + increment);
+            writeLLVM("\t\tstore i32 " + increment2 + ", i32* " + counter);
+            writeLLVM("\t\tbr label "+newID);
         } else {
             throw new ParserException(peeked, 47);
         }
         matchOrThrow(LexicalUnit.ENDDO, 47);
-        System.out.println("\tend" + newID.substring(1)+":");
+        writeLLVM("\tend" + newID.substring(1)+":");
     }
 
     private void print() throws ParserException, CompilationException {
@@ -583,7 +583,7 @@ class Parser {
         expList();
         for(String s: tmpPrintSymbolList){
             String tmp = nextVariable();
-            System.out.println("\t\t%" + tmp + " = call i32(i8*,...) @printf(i8* %msg, i32 "+ s +")");
+            writeLLVM("\t\t%" + tmp + " = call i32(i8*,...) @printf(i8* %msg, i32 "+ s +")");
         }
         tmpPrintSymbolList.clear();
     }
@@ -597,7 +597,7 @@ class Parser {
         for(Symbol s: tmpSymbolList){
             String tmp = nextVariable();
             if(check(s)) {
-                System.out.println("\t\t%" + tmp + "= call i32 @readInt()" +
+                writeLLVM("\t\t%" + tmp + "= call i32 @readInt()" +
                         "\n\t\tstore i32 %" + tmp + ", i32* %_" + s.getValue());
             }
         }
