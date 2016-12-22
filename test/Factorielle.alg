@@ -7,7 +7,7 @@ PROGRAM factorielle
   READ*, nombre, resultat
   resultat = 1+2
   
-  IF (nombre .GE. 0 .AND. nombre .LT. 100) THEN
+  IF (nombre .EQ. 0 .AND. nombre .LT. 100) THEN
     DO compteur = 1, 10
       resultat = resultat * compteur
     ENDDO

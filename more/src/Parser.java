@@ -314,7 +314,7 @@ class Parser {
             exprArithB();
             evaluateArith();
             v();
-        } else if (matchAny(LexicalUnit.COMMA, LexicalUnit.EQUAL, LexicalUnit.GREATER_EQUAL, LexicalUnit.GREATER, LexicalUnit.SMALLER_EQUAL, LexicalUnit.SMALLER,
+        } else if (matchAny(LexicalUnit.COMMA, LexicalUnit.EQUAL_COMPARE, LexicalUnit.GREATER_EQUAL, LexicalUnit.GREATER, LexicalUnit.SMALLER_EQUAL, LexicalUnit.SMALLER,
                 LexicalUnit.DIFFERENT, LexicalUnit.RIGHT_PARENTHESIS, LexicalUnit.TIMES, LexicalUnit.DIVIDE, LexicalUnit.ENDLINE,
                 LexicalUnit.AND, LexicalUnit.OR)) {
            //printRule(17, "V", "\u0395");
@@ -336,7 +336,7 @@ class Parser {
             exprArithC();
             evaluateArith();
             x();
-        } else if (matchAny(LexicalUnit.COMMA, LexicalUnit.EQUAL, LexicalUnit.GREATER_EQUAL, LexicalUnit.GREATER, LexicalUnit.SMALLER_EQUAL, LexicalUnit.SMALLER,
+        } else if (matchAny(LexicalUnit.COMMA, LexicalUnit.EQUAL_COMPARE, LexicalUnit.GREATER_EQUAL, LexicalUnit.GREATER, LexicalUnit.SMALLER_EQUAL, LexicalUnit.SMALLER,
                 LexicalUnit.DIFFERENT, LexicalUnit.RIGHT_PARENTHESIS, LexicalUnit.ENDLINE, LexicalUnit.AND, LexicalUnit.OR,
                 LexicalUnit.PLUS, LexicalUnit.MINUS)) {
             //printRule(20, "X", "\u0395");
