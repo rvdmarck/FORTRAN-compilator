@@ -33,6 +33,10 @@ class Parser {
         }
     }
 
+    /**
+     * Write output to a file
+     * @param content output to write
+     */
     private static void writeLLVM(String content) {
         content += "\n";
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(LLVMFilePath, true))) {
@@ -43,6 +47,11 @@ class Parser {
 
     }
 
+    /**
+     * add a new variable name to the variables set
+     * @param varname variable to add
+     * @throws CompilationException if variable already exist in set
+     */
     private static void create(Symbol varname) throws CompilationException {
         final String privateName = "_" + varname.getValue();
         boolean added = variables.add(privateName);
@@ -50,6 +59,12 @@ class Parser {
             throw new CompilationException("Already declared " + varname);
     }
 
+    /**
+     * check for variable existence in variables set
+     * @param varname variable to check
+     * @return true if it does exist
+     * @throws CompilationException if variable does not exist
+     */
     private static boolean check(Symbol varname) throws CompilationException {
         final String privateName = "_" + varname.getValue();
         if (!variables.contains(privateName)) {
@@ -58,10 +73,17 @@ class Parser {
         return true;
     }
 
+    /**
+     * get new temporary variable name
+     * @return temporary variable name
+     */
     private static String nextVariable() {
         return (++lastID) + "";
     }
 
+    /**
+     * output an LLVM instruction for arithmetical expression
+     */
     private static void evaluateArith() {
         String e2 = tempStack.pop(), op = tempStack.pop(), e1 = tempStack.pop();
         String newID = "%" + nextVariable();
@@ -69,6 +91,9 @@ class Parser {
         tempStack.push(newID);
     }
 
+    /**
+     * output an LLVM instruction for comparison
+     */
     private static void evaluateComp() {
         String e2 = tempStack.pop(), op = tempStack.pop(), e1 = tempStack.pop();
         String newID = "%" + nextVariable();
@@ -76,6 +101,9 @@ class Parser {
         tempStack.push(newID);
     }
 
+    /**
+     * output an LLVM instruction for condition
+     */
     private static void evaluateCond() {
         String e2 = tempStack.pop(), op = tempStack.pop(), e1 = tempStack.pop();
         String newID = "%" + nextVariable();
@@ -83,6 +111,11 @@ class Parser {
         tempStack.push(newID);
     }
 
+    /**
+     * Determine output file path
+     * @param srcFilePath path of source file
+     * @return output file path
+     */
     private String generateLLVMFilePath(String srcFilePath) {
         int lastDotIndex = srcFilePath.lastIndexOf(".");
         String tmpLLVMFilePath = srcFilePath.substring(0, lastDotIndex + 1);
