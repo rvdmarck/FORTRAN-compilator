@@ -59,7 +59,7 @@ private static void create(Symbol varname) throws CompilationException {
 	final String privateName = "_" + varname.getValue();
 	boolean added = variables.add(privateName);
 	if (!added)
-		throw new CompilationException("Already declared " + varname);
+		throw new CompilationException("Already declared " + varname.getValue() + " (line " + varname.getLine() + ", column " + varname.getColumn() + ")");
 }
 
 /**
