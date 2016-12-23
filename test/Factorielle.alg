@@ -3,7 +3,7 @@ PROGRAM factorielle
 ! Compute the factorial of a number.
 * If the input number is negative, print -1.
 
-  INTEGER nombre, resultat, compteur, nombre
+  INTEGER nombre, resultat, compteur
   READ*, nombre
   resultat = 1
 
