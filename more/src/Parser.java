@@ -1,6 +1,9 @@
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 class Parser {
@@ -128,8 +131,17 @@ class Parser {
      * @throws ParserException
      */
     void run() throws ParserException, CompilationException {
-        peek();
-        program();
+        try {
+            peek();
+            program();
+        } catch(ParserException|CompilationException ex){
+            try{
+                Files.delete(Paths.get(LLVMFilePath));
+                throw ex;
+            } catch (IOException ioe){
+                throw ex;
+            }
+        }
     }
 
     /**
