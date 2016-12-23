@@ -590,10 +590,10 @@ class Parser {
     private void doRule() throws ParserException, CompilationException {
         printRule(47, "Do", "DO [VarName] = [Number] , [Number] [EndLine] <Code> ENDDO");
         matchOrThrow(LexicalUnit.DO, 47);
-        String counter = (String) peeked.getValue();
-        counter = "%_" + counter;
-        check(peeked);
-        matchOrThrow(LexicalUnit.VARNAME, 47);
+        Symbol var = peeked;
+		matchOrThrow(LexicalUnit.VARNAME, 47);
+		check(var);
+		String counter = "%_" + var.getValue();
         matchOrThrow(LexicalUnit.EQUAL, 47);
 
         int startDO = Integer.parseInt((String) peeked.getValue());
